@@ -6,12 +6,12 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>Hexo</title>
+  <title>Java基础 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="[TOC] 1. JAVA语法1. 数据类型 基本数据类型 数值型 整形类型：byte(1)、short(2)、int(4)、long(8) 浮点类型：float(4)、double(8)   字符型：char(2) 布尔型：boolean   引用数据类型 类：class 接口：interface 数组：[]    2. 运算符 赋值运算符 123456&#x2F;&#x2F; &#x3D; +&#x3D; -&#x3D; %&#x3D; *&#x3D; \&#x3D;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://example.com/2022/02/04/1%E3%80%81JAVA%20SE/index.html">
+<meta property="og:title" content="Java基础">
+<meta property="og:url" content="http://example.com/2022/02/04/Java%E5%9F%BA%E7%A1%80/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="[TOC] 1. JAVA语法1. 数据类型 基本数据类型 数值型 整形类型：byte(1)、short(2)、int(4)、long(8) 浮点类型：float(4)、double(8)   字符型：char(2) 布尔型：boolean   引用数据类型 类：class 接口：interface 数组：[]    2. 运算符 赋值运算符 123456&#x2F;&#x2F; &#x3D; +&#x3D; -&#x3D; %&#x3D; *&#x3D; \&#x3D;">
 <meta property="og:locale" content="en_US">
@@ -29,8 +29,8 @@
 <meta property="og:image" content="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/aec8823d72652f568ac820b927069e4e.png">
 <meta property="og:image" content="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/729b5a0b77e2881568a2c029920e0f2e.png">
 <meta property="og:image" content="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/6be3acfe541841343c9338f669a58d0c.png">
-<meta property="article:published_time" content="2022-02-04T06:53:57.753Z">
-<meta property="article:modified_time" content="2022-02-01T15:54:20.495Z">
+<meta property="article:published_time" content="2022-02-04T07:16:45.000Z">
+<meta property="article:modified_time" content="2022-02-04T07:18:22.263Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/1.png">
@@ -169,8 +169,23 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-1、JAVA SE" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-Java基础" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java基础
+    </h1>
+  
+
+        
+        <a href="/2022/02/04/Java%E5%9F%BA%E7%A1%80/" class="archive-article-date">
+  	<time datetime="2022-02-04T07:16:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-04</time>
+</a>
+        
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
@@ -425,11 +440,10 @@
 </li>
 <li><p>使用 static 修饰属性：静态变量(或类变量)。</p>
 <ul>
-<li>属性：是否使用 static 修饰，又分为：<strong>静态属性</strong> VS <strong>非静态属性</strong>(<strong>实例变量</strong>)</li>
-</ul>
-<p>   <strong>实例变量</strong>：我们创建了类的多个对象，每个对象都独立的拥有了一套类中的非静态属性。当修改其中一个非静态属性时，不会导致其他对象中同样的属性值的修饰。</p>
-<p>   <strong>静态变量</strong>：我们创建了类的多个对象，多个对象共享同一个静态变量。当通过静态变量去修改某一个变量时，会导致其他对象调用此静态变量时，是修改过的。</p>
-<ul>
+<li><p>属性：是否使用 static 修饰，又分为：<strong>静态属性</strong> VS <strong>非静态属性</strong>(<strong>实例变量</strong>)</p>
+<p><strong>实例变量</strong>：我们创建了类的多个对象，每个对象都独立的拥有了一套类中的非静态属性。当修改其中一个非静态属性时，不会导致其他对象中同样的属性值的修饰。</p>
+<p><strong>静态变量</strong>：我们创建了类的多个对象，多个对象共享同一个静态变量。当通过静态变量去修改某一个变量时，会导致其他对象调用此静态变量时，是修改过的。</p>
+</li>
 <li><p>static 修饰属性的其他说明:</p>
 <p>① 静态变量随着类的加载而加载。可以通过”类.静态变量”的方式进行调用。</p>
 <p>② 静态变量的加载要早于对象的创建。</p>
@@ -478,9 +492,7 @@
 </code></pre>
 <ul>
 <li>操作静态属性的方法，通常设置为 static 的</li>
-<li><pre><code>    工具类中的方法，习惯上声明为 static 的。比如：Math、Arrays、Collections
-</code></pre>
-</li>
+<li>工具类中的方法，习惯上声明为 static 的。比如：Math、Arrays、Collections</li>
 </ul>
 </li>
 </ul>
@@ -716,7 +728,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/02/04/1%E3%80%81JAVA%20SE/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/02/04/Java%E5%9F%BA%E7%A1%80/" alt="微信分享二维码">
     </div>
 </div>
 
