@@ -1,0 +1,2809 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>计算机网络 | Skye-Blog</title>
+  <meta name="description" content="[TOC] 面试题汇总网络层传输层1、请详细介绍TCP的三次握手协议，为什么要三次握手？ 核心点：为什么需要握手？为什么是三次？  TCP重要特性：可靠性 需要同步序号、mss、是否使用sack、滑动窗口系数 建立连接不允许出现半打开状态    2、CLOSE_WAIT状态的产生原因 CLOSE_WAIT 状态在服务器停留时间很短，如果你发现大量的 CLOSE_WAIT 状态，那么就意味着被动关闭">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络">
+<meta property="og:url" content="http://example.com/2022/01/23/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/index.html">
+<meta property="og:site_name" content="Skye的博客">
+<meta property="og:description" content="[TOC] 面试题汇总网络层传输层1、请详细介绍TCP的三次握手协议，为什么要三次握手？ 核心点：为什么需要握手？为什么是三次？  TCP重要特性：可靠性 需要同步序号、mss、是否使用sack、滑动窗口系数 建立连接不允许出现半打开状态    2、CLOSE_WAIT状态的产生原因 CLOSE_WAIT 状态在服务器停留时间很短，如果你发现大量的 CLOSE_WAIT 状态，那么就意味着被动关闭">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210323195923994.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210323201247198.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210323201954513.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210323203025288.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2021032320392150.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210323204230768.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210323215954692.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324083033988.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324083920652.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324084445949.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324085732809.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324090002225.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324090248604.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324090755865.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324091009728.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324091056376.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324093615561.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324093724795.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324095008392.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324101419479.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324133710564.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324142430971.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324142641370.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2021032414292453.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324150952213.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324151227130.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324151212313.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2021032320392150.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324154443920.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324154658293.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324155108398.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324170301957.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324170714909.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324171004444.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324172738505.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2021032417554882.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324193440768.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324210909815.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325092817451.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325092904410.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210324204728853.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325094120511.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191202220144274.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzODA0MDgw,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191202224213646.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzODA0MDgw,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325094553934.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325095859574.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325100246669.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325101028109.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325110252500.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325114652530.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325143351370.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325130111407.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325130243290.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/202103251309088.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325132727690.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325134357613.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325134140585.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325152150984.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325153704822.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325154534507.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325160613345.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325161741220.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2021032516222975.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325162951118.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325174345833.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325175005651.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325175618780.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325181713417.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325181747929.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325182424161.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325184103290.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210325200355557.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-351442fbc23ab0af4980141cf140001a_1440w.jpg">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326102057846.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326132828336.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326135941171.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326135410915.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/1/5/1681c963263c7756?imageView2/0/w/1280/h/960/ignore-error/1">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/1/5/1681c8cac99f2246?imageView2/0/w/1280/h/960/ignore-error/1">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326150454573.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2021032615084465.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326153914213.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326154942465.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326164102823.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326165612618.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326165628726.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326181328866.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326181344294.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326181344294.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326201233747.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326201348819.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-a0fca9a4e7b2197de6ade0c62e2a6ba7_1440w.jpg">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326202714905.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326205948174.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210326210507170.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210327142741546.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy81MjQyMTI1LTYzYWU2YzM4MjNjYzUzOGUucG5n?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy81MjQyMTI1LWNlNWZjYjg0YTQ3ZGUyODUucG5n?x-oss-process=image/format,png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210327145548961.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/202103262121372.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210327095253569.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210327092529941.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210327093353312.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210327093559218.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210327095940974.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210327100455939.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210327100750176.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210327102342308.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210327105238231.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210327105533375.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210327110613853.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210327130326903.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210327113251413.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210327113238209.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2021032713073160.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210327131115875.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210415224744539.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210415231618520.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2022-01-23T08:48:31.000Z">
+<meta property="article:modified_time" content="2022-02-07T13:27:47.128Z">
+<meta property="article:author" content="Skye">
+<meta property="article:tag" content="计算机">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20210323195923994.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2022/01/23/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Skye的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="images/avatar.jpg" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/SkyeHao" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Skye</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">大四就业狗 &amp; 后端开发</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> 新乡, 中国</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a target="_blank" rel="noopener" href="https://github.com/SkyeHao?tab=repositories">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/SkyeHao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/u/6577680227" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.zhihu.com/" target="_blank" title="Zhihu" data-toggle=tooltip data-placement=top><i class="icon icon-zhihu"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎来到Skye的个人博客!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">16</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">20</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" style="font-size: 13px;">计算机</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a><span class="archive-list-count">16</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/02/07/JVM/" class="title">JVM</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-02-07T12:56:19.000Z" itemprop="datePublished">2022-02-07</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/02/07/Zookeeper/" class="title">Zookeeper</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-02-07T08:48:31.000Z" itemprop="datePublished">2022-02-07</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/02/07/kafka/" class="title">Kafka</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-02-07T08:48:31.000Z" itemprop="datePublished">2022-02-07</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Linux/">Linux</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/02/03/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="title">操作系统</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-02-03T12:22:14.000Z" itemprop="datePublished">2022-02-03</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/01/28/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="title">源码分析</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-01-28T05:19:58.000Z" itemprop="datePublished">2022-01-28</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc collapse   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%A2%E8%AF%95%E9%A2%98%E6%B1%87%E6%80%BB"><span class="toc-number">1.</span> <span class="toc-text">面试题汇总</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82"><span class="toc-number">1.1.</span> <span class="toc-text">网络层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82"><span class="toc-number">1.2.</span> <span class="toc-text">传输层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82"><span class="toc-number">1.3.</span> <span class="toc-text">应用层</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">2.</span> <span class="toc-text">基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%92%E8%81%94%E7%BD%91%EF%BC%88internet%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">互联网（internet）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">2.2.</span> <span class="toc-text">客户端-服务器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OSI%E7%BD%91%E7%BB%9C%E4%BA%92%E8%81%94%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.3.</span> <span class="toc-text">OSI网络互联模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E8%BF%87%E7%A8%8B"><span class="toc-number">2.4.</span> <span class="toc-text">请求过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARP%E5%8D%8F%E8%AE%AE"><span class="toc-number">2.5.</span> <span class="toc-text">ARP协议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BF%9E%E6%8E%A5%E6%96%B9%E5%BC%8F"><span class="toc-number">2.6.</span> <span class="toc-text">计算机之间的连接方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MAC%E5%9C%B0%E5%9D%80"><span class="toc-number">2.7.</span> <span class="toc-text">MAC地址</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IP%E5%9C%B0%E5%9D%80"><span class="toc-number">2.8.</span> <span class="toc-text">IP地址</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IP%E5%9C%B0%E5%9D%80%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-number">2.8.1.</span> <span class="toc-text">IP地址的分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81%E7%9A%84CIDR%E8%A1%A8%E7%A4%BA"><span class="toc-number">2.8.2.</span> <span class="toc-text">子网掩码的CIDR表示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%90%E7%BD%91%E5%88%92%E5%88%86"><span class="toc-number">2.8.3.</span> <span class="toc-text">子网划分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B6%85%E7%BD%91"><span class="toc-number">2.8.4.</span> <span class="toc-text">超网</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E5%AD%90%E7%BD%91%E5%92%8C%E8%B6%85%E7%BD%91"><span class="toc-number">2.8.5.</span> <span class="toc-text">判断子网和超网</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1"><span class="toc-number">2.9.</span> <span class="toc-text">路由</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%8C%85%E4%BC%A0%E9%80%92%E8%BF%87%E7%A8%8B"><span class="toc-number">2.9.1.</span> <span class="toc-text">数据包传递过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E3%80%81%E4%BA%92%E8%81%94%E7%BD%91%E3%80%81%E5%9B%A0%E7%89%B9%E7%BD%91"><span class="toc-number">2.9.2.</span> <span class="toc-text">网络、互联网、因特网</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ISP"><span class="toc-number">2.9.3.</span> <span class="toc-text">ISP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%88%86%E7%B1%BB"><span class="toc-number">2.9.4.</span> <span class="toc-text">网络分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8A%E7%BD%91%E6%96%B9%E5%BC%8F"><span class="toc-number">2.9.5.</span> <span class="toc-text">上网方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AC%E7%BD%91IP%E3%80%81%E7%A7%81%E7%BD%91IP"><span class="toc-number">2.9.6.</span> <span class="toc-text">公网IP、私网IP</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#NAT"><span class="toc-number">2.9.6.1.</span> <span class="toc-text">NAT</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%88%86%E5%B1%82"><span class="toc-number">3.</span> <span class="toc-text">网络分层</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E4%BA%92%E8%81%94%E6%A8%A1%E5%9E%8B"><span class="toc-number">3.1.</span> <span class="toc-text">网络互联模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OSI%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B"><span class="toc-number">3.2.</span> <span class="toc-text">OSI参考模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP-x2F-IP"><span class="toc-number">3.3.</span> <span class="toc-text">TCP&#x2F;IP</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82"><span class="toc-number">4.</span> <span class="toc-text">数据链路层</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8"><span class="toc-number">4.1.</span> <span class="toc-text">作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E4%B8%AA%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98"><span class="toc-number">4.2.</span> <span class="toc-text">三个基本问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%81%E8%A3%85%E6%88%90%E5%B8%A7"><span class="toc-number">4.2.1.</span> <span class="toc-text">封装成帧</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%8F%E6%98%8E%E4%BC%A0%E8%BE%93"><span class="toc-number">4.2.2.</span> <span class="toc-text">透明传输</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%AE%E9%94%99%E6%A3%80%E9%AA%8C"><span class="toc-number">4.2.3.</span> <span class="toc-text">差错检验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CSMA-x2F-CD%E5%8D%8F%E8%AE%AE"><span class="toc-number">4.3.</span> <span class="toc-text">CSMA&#x2F;CD协议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Ethernet-V2%E5%B8%A7%E7%9A%84%E6%A0%BC%E5%BC%8F"><span class="toc-number">4.3.1.</span> <span class="toc-text">Ethernet V2帧的格式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PPP%E5%8D%8F%E8%AE%AE"><span class="toc-number">4.4.</span> <span class="toc-text">PPP协议</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82-1"><span class="toc-number">5.</span> <span class="toc-text">网络层</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8E%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">5.1.</span> <span class="toc-text">与数据链路层的关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%8C%85"><span class="toc-number">5.2.</span> <span class="toc-text">数据包</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A6%96%E9%83%A8"><span class="toc-number">5.2.1.</span> <span class="toc-text">首部</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%88%E6%9C%AC%E3%80%81%E9%A6%96%E9%83%A8%E9%95%BF%E5%BA%A6%E3%80%81%E5%8C%BA%E5%88%86%E6%9C%8D%E5%8A%A1"><span class="toc-number">5.2.1.1.</span> <span class="toc-text">版本、首部长度、区分服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E9%95%BF%E5%BA%A6"><span class="toc-number">5.2.1.2.</span> <span class="toc-text">总长度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%87%E8%AF%86%E3%80%81%E6%A0%87%E5%BF%97"><span class="toc-number">5.2.1.3.</span> <span class="toc-text">标识、标志</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%87%E5%81%8F%E7%A7%BB"><span class="toc-number">5.2.1.4.</span> <span class="toc-text">片偏移</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%9F%E5%AD%98%E6%97%B6%E9%97%B4%EF%BC%88TTL%EF%BC%89"><span class="toc-number">5.2.1.5.</span> <span class="toc-text">生存时间（TTL）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%8F%E8%AE%AE%E3%80%81%E9%A6%96%E9%83%A8%E6%A3%80%E9%AA%8C%E5%92%8C"><span class="toc-number">5.2.1.6.</span> <span class="toc-text">协议、首部检验和</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ICMP"><span class="toc-number">5.3.</span> <span class="toc-text">ICMP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%A5%E6%96%87"><span class="toc-number">5.3.1.</span> <span class="toc-text">报文</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ICMP%E5%AE%9E%E7%8E%B0%E4%B9%8Bping%E5%91%BD%E4%BB%A4"><span class="toc-number">5.3.2.</span> <span class="toc-text">ICMP实现之ping命令</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82-1"><span class="toc-number">6.</span> <span class="toc-text">传输层</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#UDP"><span class="toc-number">6.1.</span> <span class="toc-text">UDP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F"><span class="toc-number">6.1.1.</span> <span class="toc-text">数据格式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP"><span class="toc-number">6.2.</span> <span class="toc-text">TCP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F-1"><span class="toc-number">6.2.1.</span> <span class="toc-text">数据格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93"><span class="toc-number">6.2.2.</span> <span class="toc-text">可靠传输</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%81%9C%E6%AD%A2%E7%AD%89%E5%BE%85ARQ%E5%8D%8F%E8%AE%AE"><span class="toc-number">6.2.2.1.</span> <span class="toc-text">停止等待ARQ协议</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%9E%E7%BB%ADARQ%E5%8D%8F%E8%AE%AE-%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E5%8D%8F%E8%AE%AE"><span class="toc-number">6.2.2.2.</span> <span class="toc-text">连续ARQ协议+滑动窗口协议</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#SACK%EF%BC%88%E9%80%89%E6%8B%A9%E6%80%A7%E7%A1%AE%E8%AE%A4%EF%BC%89"><span class="toc-number">6.2.2.2.1.</span> <span class="toc-text">SACK（选择性确认）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6"><span class="toc-number">6.2.3.</span> <span class="toc-text">流量控制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E6%AE%8A%E6%83%85%E5%86%B5"><span class="toc-number">6.2.3.1.</span> <span class="toc-text">特殊情况</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="toc-number">6.2.4.</span> <span class="toc-text">拥塞控制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%87%A0%E4%B8%AA%E5%90%8D%E8%AF%8D"><span class="toc-number">6.2.4.1.</span> <span class="toc-text">几个名词</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%85%A2%E5%BC%80%E5%A7%8B%EF%BC%88slow-start%EF%BC%89"><span class="toc-number">6.2.4.2.</span> <span class="toc-text">慢开始（slow start）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8B%A5%E5%A1%9E%E9%81%BF%E5%85%8D%EF%BC%88congestion-avoidance%EF%BC%89"><span class="toc-number">6.2.4.3.</span> <span class="toc-text">拥塞避免（congestion avoidance）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E9%87%8D%E4%BC%A0%EF%BC%88fast-retransmit%EF%BC%89"><span class="toc-number">6.2.4.4.</span> <span class="toc-text">快速重传（fast retransmit）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E6%81%A2%E5%A4%8D%EF%BC%88fast-recovery%EF%BC%89"><span class="toc-number">6.2.4.5.</span> <span class="toc-text">快速恢复（fast recovery）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%8F%E5%8F%B7%E5%92%8C%E7%A1%AE%E8%AE%A4%E5%8F%B7"><span class="toc-number">6.2.5.</span> <span class="toc-text">序号和确认号</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%B8%E5%AF%B9%E5%80%BC"><span class="toc-number">6.2.5.1.</span> <span class="toc-text">相对值</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E7%94%9F%E5%80%BC"><span class="toc-number">6.2.5.2.</span> <span class="toc-text">原生值</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E5%88%86%E6%9E%90"><span class="toc-number">6.2.5.3.</span> <span class="toc-text">具体分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E7%AE%A1%E7%90%86"><span class="toc-number">6.2.6.</span> <span class="toc-text">连接管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5%EF%BC%88%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%EF%BC%89"><span class="toc-number">6.2.6.1.</span> <span class="toc-text">建立连接（三次握手）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%8A%B6%E6%80%81"><span class="toc-number">6.2.6.1.1.</span> <span class="toc-text">状态</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%97%AE%E9%A2%98"><span class="toc-number">6.2.6.1.2.</span> <span class="toc-text">问题</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8A%E6%94%BE%E8%BF%9E%E6%8E%A5%EF%BC%88%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B%EF%BC%89"><span class="toc-number">6.2.6.2.</span> <span class="toc-text">释放连接（四次挥手）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%8A%B6%E6%80%81-1"><span class="toc-number">6.2.6.2.1.</span> <span class="toc-text">状态</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BB%86%E8%8A%82"><span class="toc-number">6.2.6.2.2.</span> <span class="toc-text">细节</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%97%AE%E9%A2%98-1"><span class="toc-number">6.2.6.2.3.</span> <span class="toc-text">问题</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E6%97%B6%E5%99%A8"><span class="toc-number">6.2.7.</span> <span class="toc-text">定时器</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82-%EF%BC%88%E4%B8%80%EF%BC%89"><span class="toc-number">7.</span> <span class="toc-text">应用层 （一）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#DNS%E5%8D%8F%E8%AE%AE"><span class="toc-number">7.1.</span> <span class="toc-text">DNS协议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%9F%E5%90%8D"><span class="toc-number">7.1.1.</span> <span class="toc-text">域名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DNS%E6%A6%82%E8%BF%B0"><span class="toc-number">7.1.2.</span> <span class="toc-text">DNS概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DNS%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">7.1.3.</span> <span class="toc-text">DNS服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DNS%E8%A7%A3%E6%9E%90%E6%B5%81%E7%A8%8B"><span class="toc-number">7.1.4.</span> <span class="toc-text">DNS解析流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DHCP%E5%8D%8F%E8%AE%AE"><span class="toc-number">7.2.</span> <span class="toc-text">DHCP协议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IP%E5%9C%B0%E5%9D%80%E7%9A%84%E5%88%86%E9%85%8D"><span class="toc-number">7.2.1.</span> <span class="toc-text">IP地址的分配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DHCP%E6%A6%82%E8%BF%B0"><span class="toc-number">7.2.2.</span> <span class="toc-text">DHCP概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DHCP%E5%88%86%E9%85%8DIP%E5%9C%B0%E5%9D%80%E7%9A%84%E5%9B%9B%E4%B8%AA%E9%98%B6%E6%AE%B5"><span class="toc-number">7.2.3.</span> <span class="toc-text">DHCP分配IP地址的四个阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%86%E8%8A%82-1"><span class="toc-number">7.2.4.</span> <span class="toc-text">细节</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82%EF%BC%88%E4%BA%8C%EF%BC%89"><span class="toc-number">8.</span> <span class="toc-text">应用层（二）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E5%8D%8F%E8%AE%AE"><span class="toc-number">8.1.</span> <span class="toc-text">HTTP协议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">8.1.1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%88%E6%9C%AC%E5%92%8C%E6%A0%87%E5%87%86"><span class="toc-number">8.1.2.</span> <span class="toc-text">版本和标准</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E8%BF%87%E7%A8%8B-1"><span class="toc-number">8.1.3.</span> <span class="toc-text">请求过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F"><span class="toc-number">8.1.4.</span> <span class="toc-text">报文格式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E6%8A%A5%E6%96%87"><span class="toc-number">8.1.4.1.</span> <span class="toc-text">请求报文</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%93%8D%E5%BA%94%E6%8A%A5%E6%96%87"><span class="toc-number">8.1.4.2.</span> <span class="toc-text">响应报文</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#GET%E8%AF%B7%E6%B1%82%E5%92%8CPOST%E8%AF%B7%E6%B1%82"><span class="toc-number">8.1.4.3.</span> <span class="toc-text">GET请求和POST请求</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E7%A0%81"><span class="toc-number">8.1.5.</span> <span class="toc-text">状态码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP2-0"><span class="toc-number">8.1.6.</span> <span class="toc-text">HTTP2.0</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cookie%E5%92%8CSession"><span class="toc-number">8.1.7.</span> <span class="toc-text">Cookie和Session</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%90%86"><span class="toc-number">8.1.8.</span> <span class="toc-text">代理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">8.1.8.1.</span> <span class="toc-text">代理服务器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E3%80%81%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="toc-number">8.1.8.2.</span> <span class="toc-text">正向代理、反向代理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E7%9A%84%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5"><span class="toc-number">8.1.8.3.</span> <span class="toc-text">相关的头部字段</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CDN"><span class="toc-number">8.1.9.</span> <span class="toc-text">CDN</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98"><span class="toc-number">8.1.10.</span> <span class="toc-text">缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%93%8D%E5%BA%94%E5%A4%B4"><span class="toc-number">8.1.10.1.</span> <span class="toc-text">响应头</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E5%A4%B4"><span class="toc-number">8.1.10.2.</span> <span class="toc-text">请求头</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E7%9A%84%E4%BD%BF%E7%94%A8%E6%B5%81%E7%A8%8B"><span class="toc-number">8.1.10.3.</span> <span class="toc-text">缓存的使用流程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%A2%E8%AF%95%E9%A2%98"><span class="toc-number">8.1.11.</span> <span class="toc-text">面试题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%B4%E4%B8%80%E4%B8%8B%E4%B8%80%E6%AC%A1%E5%AE%8C%E6%95%B4%E7%9A%84HTTP%E8%AF%B7%E6%B1%82%E8%BF%87%E7%A8%8B%E5%8C%85%E6%8B%AC%E5%93%AA%E4%BA%9B%E5%86%85%E5%AE%B9%EF%BC%9F"><span class="toc-number">8.1.11.1.</span> <span class="toc-text">说一下一次完整的HTTP请求过程包括哪些内容？</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%A7%8D%E5%9B%9E%E7%AD%94"><span class="toc-number">8.1.11.1.1.</span> <span class="toc-text">第一种回答</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%A7%8D%E5%9B%9E%E7%AD%94"><span class="toc-number">8.1.11.1.2.</span> <span class="toc-text">第二种回答</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82%EF%BC%88%E4%B8%89%EF%BC%89"><span class="toc-number">9.</span> <span class="toc-text">应用层（三）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E5%A8%81%E8%83%81"><span class="toc-number">9.1.</span> <span class="toc-text">安全威胁</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82%E2%80%94ARP%E6%AC%BA%E9%AA%97"><span class="toc-number">9.1.1.</span> <span class="toc-text">网络层—ARP欺骗</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DoS%E3%80%81DDoS"><span class="toc-number">9.1.2.</span> <span class="toc-text">DoS、DDoS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#SYN%E6%B4%AA%E6%B0%B4%E6%94%BB%E5%87%BB"><span class="toc-number">9.1.2.1.</span> <span class="toc-text">SYN洪水攻击</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#LAND%E6%94%BB%E5%87%BB"><span class="toc-number">9.1.2.2.</span> <span class="toc-text">LAND攻击</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1%E6%96%B9%E5%BC%8F"><span class="toc-number">9.1.2.3.</span> <span class="toc-text">防御方式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82%E2%80%94DNS%E5%8A%AB%E6%8C%81"><span class="toc-number">9.1.3.</span> <span class="toc-text">应用层—DNS劫持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98"><span class="toc-number">9.1.4.</span> <span class="toc-text">HTTP协议的安全问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E5%90%91%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B0"><span class="toc-number">9.2.</span> <span class="toc-text">单向散列函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%EF%BC%88%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%EF%BC%89"><span class="toc-number">9.3.</span> <span class="toc-text">对称加密（对称密码）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DES"><span class="toc-number">9.3.1.</span> <span class="toc-text">DES</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3DES"><span class="toc-number">9.3.2.</span> <span class="toc-text">3DES</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AES"><span class="toc-number">9.3.3.</span> <span class="toc-text">AES</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%EF%BC%88%E5%85%AC%E9%92%A5%E5%AF%86%E7%A0%81%EF%BC%89"><span class="toc-number">9.4.</span> <span class="toc-text">非对称加密（公钥密码）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E5%AF%86%E9%92%A5%E9%85%8D%E9%80%81%E9%97%AE%E9%A2%98"><span class="toc-number">9.4.1.</span> <span class="toc-text">解决密钥配送问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RSA"><span class="toc-number">9.4.2.</span> <span class="toc-text">RSA</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%B7%E5%90%88%E5%AF%86%E7%A0%81%E7%B3%BB%E7%BB%9F"><span class="toc-number">9.5.</span> <span class="toc-text">混合密码系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A0%E5%AF%86"><span class="toc-number">9.5.1.</span> <span class="toc-text">加密</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%AF%86"><span class="toc-number">9.5.2.</span> <span class="toc-text">解密</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D"><span class="toc-number">9.6.</span> <span class="toc-text">数字签名</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%87%E7%A8%8B%E6%94%B9%E8%BF%9B"><span class="toc-number">9.6.1.</span> <span class="toc-text">过程改进</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%96%91%E6%83%91"><span class="toc-number">9.6.2.</span> <span class="toc-text">疑惑</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%81%E4%B9%A6"><span class="toc-number">9.7.</span> <span class="toc-text">证书</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E5%86%8C%E5%92%8C%E4%B8%8B%E8%BD%BD"><span class="toc-number">9.7.1.</span> <span class="toc-text">注册和下载</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82%EF%BC%88%E5%9B%9B%EF%BC%89"><span class="toc-number">10.</span> <span class="toc-text">应用层（四）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTPS"><span class="toc-number">10.1.</span> <span class="toc-text">HTTPS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SSL-x2F-TLS"><span class="toc-number">10.1.1.</span> <span class="toc-text">SSL&#x2F;TLS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OpenSSL"><span class="toc-number">10.1.2.</span> <span class="toc-text">OpenSSL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTPS%E7%9A%84%E6%88%90%E6%9C%AC"><span class="toc-number">10.1.3.</span> <span class="toc-text">HTTPS的成本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTPS%E9%80%9A%E4%BF%A1%E8%BF%87%E7%A8%8B"><span class="toc-number">10.1.4.</span> <span class="toc-text">HTTPS通信过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TLS-1-2%E7%9A%84%E8%BF%9E%E6%8E%A5"><span class="toc-number">10.1.5.</span> <span class="toc-text">TLS 1.2的连接</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81Client-Hello"><span class="toc-number">10.1.5.1.</span> <span class="toc-text">1、Client Hello</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81Server-Hello"><span class="toc-number">10.1.5.2.</span> <span class="toc-text">2、Server Hello</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81certificate"><span class="toc-number">10.1.5.3.</span> <span class="toc-text">3、certificate</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4%E3%80%81server-key-exchange"><span class="toc-number">10.1.5.4.</span> <span class="toc-text">4、server key exchange</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5%E3%80%81Server-Hello-Done"><span class="toc-number">10.1.5.5.</span> <span class="toc-text">5、Server Hello Done</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6%E3%80%81Client-Key-Exchange"><span class="toc-number">10.1.5.6.</span> <span class="toc-text">6、Client Key Exchange</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7%E3%80%81change-cipher-spec"><span class="toc-number">10.1.5.7.</span> <span class="toc-text">7、change cipher spec</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8%E3%80%81Finished"><span class="toc-number">10.1.5.8.</span> <span class="toc-text">8、Finished</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9%E3%80%81Change-Cipher-spec"><span class="toc-number">10.1.5.9.</span> <span class="toc-text">9、Change Cipher spec</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#10%E3%80%81Finished"><span class="toc-number">10.1.5.10.</span> <span class="toc-text">10、Finished</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">10.1.5.11.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-计算机网络" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      计算机网络
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/01/23/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" class="article-date">
+	  <time datetime="2022-01-23T08:48:31.000Z" itemprop="datePublished">2022-01-23</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/23/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>[TOC]</p>
+<h1 id="面试题汇总"><a href="#面试题汇总" class="headerlink" title="面试题汇总"></a>面试题汇总</h1><h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><h2 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h2><p><strong>1、请详细介绍TCP的三次握手协议，为什么要三次握手？</strong></p>
+<p>核心点：为什么需要握手？为什么是三次？</p>
+<ul>
+<li>TCP重要特性：可靠性</li>
+<li>需要同步序号、mss、是否使用sack、滑动窗口系数</li>
+<li>建立连接不允许出现半打开状态</li>
+</ul>
+<hr/>
+
+<p><strong>2、CLOSE_WAIT状态的产生原因</strong></p>
+<p>CLOSE_WAIT 状态在服务器停留时间很短，如果你发现大量的 CLOSE_WAIT 状态，那么就意味着被动关闭的一方没有及时发出 FIN 包，一般有如下几种可能：</p>
+<ul>
+<li>程序问题：如果代码层面忘记了 close 相应的 socket 连接，那么自然不会发出 FIN 包，从而导致 CLOSE_WAIT 累积；或者代码不严谨，出现死循环之类的问题，导致即便后面写了 close 也永远执行不到。</li>
+<li>响应太慢或者超时设置过小：如果连接双方不和谐，一方不耐烦直接 timeout，另一方却还在忙于耗时逻辑，就会导致 close 被延后。响应太慢是首要问题，不过换个角度看，也可能是 timeout 设置过小。</li>
+<li>BACKLOG 太大：此处的 backlog 不是 syn backlog，而是 accept 的 backlog，如果 backlog 太大的话，设想突然遭遇大访问量的话，即便响应速度不慢，也可能出现来不及消费的情况，导致多余的请求还在队列里就被对方关闭了。</li>
+</ul>
+<hr/>
+
+<p><strong>3、服务器的最大并发连接数是多少？</strong></p>
+<p>由TCP四元组决定，包括源IP地址、目标IP地址、源端口、目标端口</p>
+<hr/>
+
+<p><strong>4、TCP和UDP协议应该如何选择？</strong></p>
+<p>UDP：</p>
+<ul>
+<li>一对多通讯</li>
+<li>效率高</li>
+<li>简单</li>
+<li>实时性好</li>
+</ul>
+<p>TCP：</p>
+<ul>
+<li>字符流协议，可以传任意长度的消息</li>
+<li>可靠</li>
+<li>流量控制、拥塞控制</li>
+</ul>
+<h2 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h2><p><strong>1、HTTP协议中缓存的处理流程？</strong></p>
+<hr/>
+
+<p><strong>2、URL之后发生了什么？</strong></p>
+<ul>
+<li>DNS解析</li>
+<li>TCP连接</li>
+<li>发送HTTP请求</li>
+<li>服务器处理请求并返回HTTP报文</li>
+<li>浏览器解析渲染页面</li>
+<li>连接结束</li>
+</ul>
+<hr/>
+
+<p><strong>3、使用HTTP长连接的优点？</strong></p>
+<ul>
+<li>减少了握手次数</li>
+<li>减少慢启动的影响</li>
+</ul>
+<p><strong>如何区别HTTP的长连接和短连接？</strong></p>
+<p>在HTTP&#x2F;1.0中，默认使用的是短连接</p>
+<p>从 HTTP&#x2F;1.1起，默认使用长连接，Connection:keep-alive</p>
+<p><strong>使用HTTP长连接的缺点？</strong></p>
+<ul>
+<li>TCP协议是字符流协议，顺序不能乱</li>
+<li>会出现对头阻塞</li>
+</ul>
+<hr/>
+
+<p><strong>4、HTTP1.0&#x2F;1.1&#x2F;2.0的区别</strong></p>
+<p>HTTP&#x2F;1.1相较于 HTTP&#x2F;1.0 协议的区别主要体现在：</p>
+<ol>
+<li><strong>长连接</strong> : <strong>在HTTP&#x2F;1.0中，默认使用的是短连接</strong>，也就是说每次请求都要重新建立一次连接。HTTP 是基于TCP&#x2F;IP协议的,每一次建立或者断开连接都需要三次握手四次挥手的开销，如果每次请求都要这样的话，开销会比较大。因此最好能维持一个长连接，可以用个长连接来发多个请求。<strong>HTTP 1.1起，默认使用长连接</strong> ,默认开启Connection： keep-alive。 <strong>HTTP&#x2F;1.1的持续连接有非流水线方式和流水线方式</strong> 。流水线方式是客户在收到HTTP的响应报文之前就能接着发送新的请求报文。与之相对应的非流水线方式是客户在收到前一个响应后才能发送下一个请求。</li>
+<li><strong>错误状态响应码</strong> :在HTTP1.1中新增了24个错误状态响应码，如409（Conflict）表示请求的资源与资源的当前状态发生冲突；410（Gone）表示服务器上的某个资源被永久性的删除。</li>
+<li><strong>缓存处理</strong> :在HTTP1.0中主要使用header里的If-Modified-Since，Expires来做为缓存判断的标准，HTTP1.1则引入了更多的缓存控制策略例如Entity tag，If-Unmodified-Since, If-Match, If-None-Match等更多可供选择的缓存头来控制缓存策略。</li>
+<li><strong>带宽优化及网络连接的使用</strong> :HTTP1.0中，存在一些浪费带宽的现象，例如客户端只是需要某个对象的一部分，而服务器却将整个对象送过来了，并且不支持断点续传功能，HTTP1.1则在请求头引入了range头域，它允许只请求资源的某个部分，即返回码是206（Partial Content），这样就方便了开发者自由的选择以便于充分利用带宽和连接。</li>
+</ol>
+<hr/>
+
+<p><strong>5、HTTP和HTTPS</strong></p>
+<ol>
+<li><strong>端口</strong> ：HTTP的URL由“http:&#x2F;&#x2F;”起始且默认使用端口80，而HTTPS的URL由“https:&#x2F;&#x2F;”起始且默认使用端口443。</li>
+<li>安全性和资源消耗：HTTP协议运行在TCP之上，所有传输的内容都是明文，客户端和服务器端都无法验证对方的身份。HTTPS是运行在SSL&#x2F;TLS之上的HTTP协议，SSL&#x2F;TLS 运行在TCP之上。所有传输的内容都经过加密，加密采用<strong>对称加密</strong>，但对称加密的密钥用服务器方的证书进行了<strong>非对称加密</strong>。所以说，HTTP 安全性没有 HTTPS高，但是 HTTPS 比HTTP耗费更多服务器资源。<ul>
+<li>对称加密：密钥只有一个，加密解密为同一个密码，且加解密速度快，典型的对称加密算法有DES、AES等；</li>
+<li>非对称加密：密钥成对出现（且根据公钥无法推知私钥，根据私钥也无法推知公钥），加密解密使用不同密钥（公钥加密需要私钥解密，私钥加密需要公钥解密），相对对称加密速度较慢，典型的非对称加密算法有RSA、DSA等。</li>
+</ul>
+</li>
+</ol>
+<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><h2 id="互联网（internet）"><a href="#互联网（internet）" class="headerlink" title="互联网（internet）"></a>互联网（internet）</h2><img src="https://img-blog.csdnimg.cn/20210323195923994.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p>思考：数据是如何从一个设备传递到另外一个设备的？</p>
+<p>1、互联网、移动互联网、物联网都离不开网络协议</p>
+<p>2、最熟悉的网络协议：HTTP</p>
+<p>3、为了满足各种需求，有各式各样的网络协议（HTTPS、SMTP、MQIT等）</p>
+<h2 id="客户端-服务器"><a href="#客户端-服务器" class="headerlink" title="客户端-服务器"></a>客户端-服务器</h2><p><strong>1、C&#x2F;C++跨平台原理</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210323201247198.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom: 40%;" />
+
+<p><strong>2、Java跨平台原理</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210323201954513.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom: 40%;" />
+
+<p><strong>3、客户端vs服务器</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210323203025288.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:40%;" />
+
+<h2 id="OSI网络互联模型"><a href="#OSI网络互联模型" class="headerlink" title="OSI网络互联模型"></a>OSI网络互联模型</h2><p><strong>国际标准化组织ISO在1985年制定了网络互联模型</strong></p>
+<p><strong>OSI参考模型</strong>（open system interconnect reference model），<strong>7层结构</strong></p>
+<img src="https://img-blog.csdnimg.cn/2021032320392150.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p><strong>注意：OSI参考模型是理论模型，实战模型使用TCP&#x2F;IP协议模型，学习研究使用第三种模型</strong></p>
+<h2 id="请求过程"><a href="#请求过程" class="headerlink" title="请求过程"></a>请求过程</h2><img src="https://img-blog.csdnimg.cn/20210323204230768.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom: 67%;" />
+
+<p><strong>经过每一层的包装从客户端的应用层到物理层，传输到服务器的物理层后再一层层的解析</strong></p>
+<h2 id="ARP协议"><a href="#ARP协议" class="headerlink" title="ARP协议"></a>ARP协议</h2><p>ARP（Address Resolution Protocol）即地址解析协议， 用于实现从 IP 地址到 MAC 地址的映射，即询问目标IP对应的MAC地址。</p>
+<p>例：A向B发送数据</p>
+<p>根据ARP表差查询MAC地址，如果查不到就使用广播地址，所有节点都可以收到，再根据IP地址获得B的MAC地址，再返回A</p>
+<h2 id="计算机之间的连接方式"><a href="#计算机之间的连接方式" class="headerlink" title="计算机之间的连接方式"></a>计算机之间的连接方式</h2><p>1、需要得知对方的IP地址</p>
+<p>2、最终根据MAC地址（网卡地址），输送数据到网卡，被网卡接收</p>
+<p>3、如果网卡发现数据的目标MAC地址是自己，就会把数据传递给上一层进行处理；不是自己就会进行丢弃</p>
+<hr/>
+
+<p><strong>网线直连</strong></p>
+<p>需要使用交叉线（不是直通线）</p>
+<hr/>
+
+<p><strong>同轴电缆（Coaxial）</strong></p>
+<p>半双工通信</p>
+<p>容易冲突</p>
+<p>不安全</p>
+<hr/>
+
+<p><strong>集线器（Hub）</strong></p>
+<p>半双工通信</p>
+<p>容易冲突</p>
+<p>不安全</p>
+<hr/>
+
+<p><strong>网桥（Bridge）</strong></p>
+<p>能够自学习得知每个接口那侧的MAC地址</p>
+<p>隔绝冲突域</p>
+<hr/>
+
+<p><strong>交换机（Switch）</strong></p>
+<p>相当于接口更多的网桥</p>
+<p>比集线器安全</p>
+<p><strong>全双工通信</strong></p>
+<hr/>
+
+<p><strong>路由器（Router）</strong></p>
+<p>上面的几种方式连接的设备必须在<strong>同一网段</strong>，连接的设备处在<strong>同一个广播域</strong></p>
+<p><strong>路由器：可以在不同网段之间转发数据，隔绝广播域</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210323215954692.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p>主机发数据之前，首先判断目标主机的IP地址跟它<strong>是否在同一个网段</strong></p>
+<ul>
+<li>在同一个网段：ARP、通过交换机&#x2F;集线器传递数据</li>
+<li>不在同一个网段：通过路由器转发数据</li>
+</ul>
+<p>设置路由器网关的IP地址，路由器的网关需要和一边的主机在同一个网段，同时主机需要设置网关</p>
+<p><strong>比如：计算机0和计算机3进行第一次通信</strong></p>
+<ul>
+<li>主机0通过ARP知道网关的MAC地址，将地址返回主机0</li>
+<li>主机0通过ICMP传输数据到另一边的网关</li>
+<li>另一边的网关发出ARP，找到目标主机3的MAC地址，返回网关</li>
+<li>网关通过ICMP传输数据到主机3</li>
+</ul>
+<h2 id="MAC地址"><a href="#MAC地址" class="headerlink" title="MAC地址"></a>MAC地址</h2><p>1、每一个网卡都有一个<strong>6字节（48bit）</strong>的MAC地址（Media Access Control Address）</p>
+<p>2、MAC地址全球唯一，固化在网卡的ROM中，由IEEE802标准规定</p>
+<p>3、<strong>前3字节</strong>：OUI，组织唯一标识符（厂商不同，OUI不同）</p>
+<p>4、<strong>后3字节</strong>：网络接口标识符（厂商自行分配）</p>
+<p>5、12位十六进制</p>
+<p><img src="https://img-blog.csdnimg.cn/20210324083033988.png" alt="在这里插入图片描述"></p>
+<p>6、<strong>广播地址</strong>：48位都为1，<strong>FF-FF-FF-FF-FF-FF</strong>（二进制1111&#x3D;十六进制F）</p>
+<p>7、<strong>MAC地址的获取</strong></p>
+<ul>
+<li>当不知道对方的MAC地址，使用ARP广播进行获取对方的MAC地址</li>
+<li>获取成功后，会缓存IP地址、MAC地址的映射信息，又称为<strong>ARP缓存</strong></li>
+<li>通过ARP广播获取的MAC地址，属于<strong>动态缓存</strong>，存储时间较短，超时删除</li>
+</ul>
+<h2 id="IP地址"><a href="#IP地址" class="headerlink" title="IP地址"></a>IP地址</h2><p>1、IP地址：互联网上每一个主机都有一个IP地址</p>
+<p>2、IPv4版本，<strong>32bit（4字节）</strong>，已经被用完</p>
+<p>3、IPv6版本，128bit（16字节）</p>
+<img src="https://img-blog.csdnimg.cn/20210324083920652.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:67%;" />
+
+<p>4、<strong>IP地址的组成</strong>：网络标识（网络ID）+主机标识（主机ID）</p>
+<ul>
+<li>同一个网段的主机，网络ID相同</li>
+<li>通过<strong>子网掩码</strong>可以算出<strong>网络ID</strong>：<strong>子网掩码&amp;IP地址</strong>（&amp;运算：同为1则为1，否则为0）</li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/20210324084445949.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p>⚠️：<strong>必须要通过子网掩码计算出网络ID，网络ID有多少位是不一定的</strong></p>
+<p>⚠️：<strong>主机位不能全0（网段），不能全1（广播IP地址）</strong></p>
+<p>例如：网段为192.168.0.0，能够容纳主机数量为256*256-2</p>
+<blockquote>
+<p>计算机和其他计算机通信时，需要判断是否在同一个网段，如果在就不需要使用路由器进行转发</p>
+</blockquote>
+<h3 id="IP地址的分类"><a href="#IP地址的分类" class="headerlink" title="IP地址的分类"></a>IP地址的分类</h3><img src="https://img-blog.csdnimg.cn/20210324085732809.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:40%;" />
+
+<p><strong>1、A类地址</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210324090002225.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p>网络ID</p>
+<ul>
+<li>0开头</li>
+<li>0不能使用，127不能使用（保留），127.0.0.1是本地环回地址，代表本机地址</li>
+<li>可以分配给主机：1-126</li>
+</ul>
+<p>主机ID</p>
+<ul>
+<li>第2、3、4部分取值范围：0-255</li>
+<li>最大主机容量：256 * 256 * 256 - 2 &#x3D; 2^24 - 2 &#x3D; 16777214</li>
+</ul>
+<p><strong>2、B类地址</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210324090248604.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:55%;" />
+
+<p>网络ID</p>
+<ul>
+<li>10开头</li>
+<li>范围：128.0 到 191.255</li>
+</ul>
+<p>主机ID</p>
+<ul>
+<li>第3、4部分取值范围：0-255</li>
+<li>最大主机容量：256 * 256 - 2 &#x3D; 2^16 -2</li>
+</ul>
+<p><strong>3、C类地址</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210324090755865.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:55%;" />
+
+<p>网络ID：</p>
+<ul>
+<li>110开头</li>
+<li>第1部分取值范围：192-223</li>
+<li>第2、3部分取值范围：0-255</li>
+</ul>
+<p>主机ID：</p>
+<ul>
+<li>第4部分取值范围：0-255</li>
+<li>最大主机容量：256 - 2 &#x3D; 254</li>
+</ul>
+<p><strong>4、D类地址</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210324091009728.png" alt="在这里插入图片描述" style="zoom:60%;" />
+
+<p><strong>5、E类地址</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210324091056376.png" alt="在这里插入图片描述" style="zoom: 75%;" />
+
+<h3 id="子网掩码的CIDR表示"><a href="#子网掩码的CIDR表示" class="headerlink" title="子网掩码的CIDR表示"></a>子网掩码的CIDR表示</h3><p>1、192.168.1.100&#x2F;24，代表子网掩码24个1，也就是255.255.255.0</p>
+<p>2、123.210.100.200&#x2F;16，代码子网掩码16个1，也就是255.255.0.0</p>
+<h3 id="子网划分"><a href="#子网划分" class="headerlink" title="子网划分"></a>子网划分</h3><blockquote>
+<p> 为什么要子网划分？</p>
+</blockquote>
+<p><strong>如果需要让200台主机在同一个网段内，可以分配一个C类网段，比如192.168.1.0&#x2F;24</strong></p>
+<ul>
+<li>共254个可用IP地址，192.168.1.1— 192.168.1.254</li>
+</ul>
+<p><strong>如果需要让500台主机在同一个网段内，分配一个B类网段，比如：191.100.0.0&#x2F;16</strong></p>
+<ul>
+<li>共65534个可用Ip地址</li>
+<li>多出65034个空闲IP地址，属于极大的浪费资源</li>
+</ul>
+<p>1、<strong>子网划分</strong>：借用主机位作为子网位，划分出多个子网</p>
+<p>可以分为：</p>
+<ul>
+<li>等长子网划分：将一个网段等分成多个子网，每个子网的可用IP地址数量一样</li>
+<li>变长子网划分：每个子网的可用IP地址数量可用不一样</li>
+</ul>
+<p><strong>1、等长子网划分</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210324093615561.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:60%;" />
+
+<p><strong>往右移1位，等分出两个子网</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210324093724795.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:40%;" />
+
+<p><strong>往右移2位，等分出四个子网</strong></p>
+<blockquote>
+<p> 规律：后移n位，等分出(1&#x2F;2)^n个子网</p>
+</blockquote>
+<p><strong>2、变长子网划分</strong></p>
+<p><strong>如果一个子网地址块的长度是原网段的(1&#x2F;2)^n，子网的子网掩码就增加n</strong></p>
+<p>不等长的子网，子网掩码不同</p>
+<img src="https://img-blog.csdnimg.cn/20210324095008392.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:67%;" />
+
+<h3 id="超网"><a href="#超网" class="headerlink" title="超网"></a>超网</h3><p><strong>将多个连续的网段合并成一个更大的网段</strong></p>
+<blockquote>
+<p> 需求：200台计算机使用192.168.0.0&#x2F;24网段，现在希望增加200台设备到同一个网段</p>
+</blockquote>
+<p>200台在192.168.0.0&#x2F;24网段，200台在192.168.1.0&#x2F;24网段</p>
+<p>合并为一个网段：192.168.0.0&#x2F;23（子网掩码左移1位）</p>
+<img src="https://img-blog.csdnimg.cn/20210324101419479.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<h3 id="判断子网和超网"><a href="#判断子网和超网" class="headerlink" title="判断子网和超网"></a>判断子网和超网</h3><img src="https://img-blog.csdnimg.cn/20210324133710564.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<h2 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h2><p>在不同网段之间传输数据，需要路由器的支持</p>
+<p>在默认情况下，路由器只知道和它直连的网段，<strong>非直连的网段需要通过静态路由、动态路由告诉它</strong></p>
+<ul>
+<li><strong>静态路由</strong><ul>
+<li>管理员手动添加路由信息</li>
+<li>适用于小规模网络</li>
+</ul>
+</li>
+<li><strong>动态路由</strong><ul>
+<li>路由器通过路由选择协议（RIP、OSPF）自动获取路由信息</li>
+<li>适用于大规模网络</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据包传递过程"><a href="#数据包传递过程" class="headerlink" title="数据包传递过程"></a>数据包传递过程</h3><img src="https://img-blog.csdnimg.cn/20210324142430971.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom: 33%;" />
+
+<h3 id="网络、互联网、因特网"><a href="#网络、互联网、因特网" class="headerlink" title="网络、互联网、因特网"></a>网络、互联网、因特网</h3><p><img src="https://img-blog.csdnimg.cn/20210324142641370.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="ISP"><a href="#ISP" class="headerlink" title="ISP"></a>ISP</h3><p><strong>ISP：Internet服务提供商</strong>，比如：移动、电信、网通等</p>
+<p>平时拉宽带都是通过ISP连接到Internet的</p>
+<img src="https://img-blog.csdnimg.cn/2021032414292453.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:40%;" />
+
+<h3 id="网络分类"><a href="#网络分类" class="headerlink" title="网络分类"></a>网络分类</h3><p>安装网络范围分类：局域网、城域网、广域网</p>
+<ul>
+<li><p><strong>局域网</strong></p>
+<ul>
+<li><p><strong>LAN</strong>，几百米到十几公里内构成的计算机网络</p>
+</li>
+<li><p>局域网中最广泛使用的网络技术：<strong>以太网（Ethernet）</strong></p>
+</li>
+<li><p><strong>WLAN：</strong>无线局域网</p>
+</li>
+</ul>
+</li>
+<li><p><strong>城域网</strong>：MAN</p>
+</li>
+<li><p><strong>广域网</strong>：WAN</p>
+<ul>
+<li>一般范围是几百公里和几千公里，通常需要租用ISP的线路</li>
+</ul>
+</li>
+</ul>
+<h3 id="上网方式"><a href="#上网方式" class="headerlink" title="上网方式"></a>上网方式</h3><p><strong>1、电话线入户</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/20210324150952213.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><strong>2、光纤入户</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/20210324151227130.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><strong>3、网线入户</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210324151212313.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<h3 id="公网IP、私网IP"><a href="#公网IP、私网IP" class="headerlink" title="公网IP、私网IP"></a>公网IP、私网IP</h3><p>1、公网IP（public）</p>
+<ul>
+<li>Internet上的路由器只有到达公网的路由表，没有到达私网的路由表</li>
+<li>公网IP由因特网信息中心统一分配和管理</li>
+<li>ISP需要向Inter NIC申请公网IP</li>
+</ul>
+<p>2、私网IP（private）</p>
+<ul>
+<li><strong>主要用于局域网</strong><ul>
+<li>A类：10.0.0.0&#x2F;8</li>
+<li>B类：172.16.0.0&#x2F;16—172.31.0.0&#x2F;16</li>
+<li>C类：192.168.0.0&#x2F;24—192.168.255.0&#x2F;24，256个C类网络</li>
+</ul>
+</li>
+</ul>
+<h4 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h4><p><strong>私网IP访问Internet需要进行NAT转换为公网IP</strong></p>
+<ul>
+<li>NAT（Network Address Translation）</li>
+<li>这一步由路由器完成</li>
+</ul>
+<p><strong>NAT特点：</strong></p>
+<ul>
+<li>可以节约公网IP资源</li>
+<li>会隐藏内部真实IP</li>
+</ul>
+<p><strong>NAT的分类：</strong></p>
+<ul>
+<li>静态转换（不常用）<ul>
+<li>手动配置NAT映射表</li>
+<li>一对一转换，一个私网IP对应一个公网IP</li>
+</ul>
+</li>
+<li>动态转换（不常用）<ul>
+<li>定义外部地址池，动态随机转换</li>
+<li>一对一转换</li>
+</ul>
+</li>
+<li><strong>PAT（Port Address Translation）</strong><ul>
+<li>多对一转换，最大程度节约公网IP资源</li>
+<li>利用<strong>端口号标识</strong>不同的数据请求</li>
+<li><strong>目前应用最广泛</strong></li>
+</ul>
+</li>
+</ul>
+<h1 id="网络分层"><a href="#网络分层" class="headerlink" title="网络分层"></a>网络分层</h1><h2 id="网络互联模型"><a href="#网络互联模型" class="headerlink" title="网络互联模型"></a>网络互联模型</h2><img src="https://img-blog.csdnimg.cn/2021032320392150.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:40%;" />
+
+<h2 id="OSI参考模型"><a href="#OSI参考模型" class="headerlink" title="OSI参考模型"></a>OSI参考模型</h2><p>7层结构</p>
+<p>每一层都接收由它的下一层所提供的特定服务，并且为上一层提供特定的服务。</p>
+<p><strong>接口</strong>：上下层之间交互所遵循的约定</p>
+<p><strong>协议</strong>：同一层之间交互所遵循的约定</p>
+<img src="https://img-blog.csdnimg.cn/20210324154443920.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+
+
+<h2 id="TCP-x2F-IP"><a href="#TCP-x2F-IP" class="headerlink" title="TCP&#x2F;IP"></a>TCP&#x2F;IP</h2><img src="https://img-blog.csdnimg.cn/20210324154658293.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:33%;" />
+
+
+
+<img src="https://img-blog.csdnimg.cn/20210324155108398.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom: 50%;" />
+
+<h1 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h1><p><strong>1、链路</strong></p>
+<p>从一个节点到相邻节点的一段物理线路（有线或无线），中间没有其他交换节点</p>
+<p><strong>2、数据链路</strong></p>
+<p>在一条链路上传输数据时，需要有对应的通信协议控制数据的传输</p>
+<p><strong>不同类型的数据链路，所用的通信协议可能是不同的</strong></p>
+<ul>
+<li>广播信道：<strong>CSMA&#x2F;CD协议</strong>（比如同轴电缆、集线器等组成的网络）</li>
+<li>点对点信道：<strong>PPP协议</strong>（比如两个路由器之间的信道）</li>
+</ul>
+<p><strong>3、数据链路层的3个基本问题</strong></p>
+<ul>
+<li>封装成帧</li>
+<li>透明传输</li>
+<li>差错检验</li>
+</ul>
+<h2 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h2><p>数据链路层的协议定义了通信媒介互连的设备之间传输的规范（双绞线电缆、光纤等）；此外，各个设备之间有时也会通过交换机、网桥等中专数据。</p>
+<h2 id="三个基本问题"><a href="#三个基本问题" class="headerlink" title="三个基本问题"></a>三个基本问题</h2><h3 id="封装成帧"><a href="#封装成帧" class="headerlink" title="封装成帧"></a>封装成帧</h3><p>1、帧的数据部分：</p>
+<ul>
+<li>网络层传输过来的：<strong>IP数据包</strong></li>
+</ul>
+<p>2、最大传输单元MTU（上一层的数据包要小于MTU）</p>
+<ul>
+<li>每一种数据链路层协议都规定了能够传送的帧的数据长度上线</li>
+<li><strong>以太网的MTU为1500个字节</strong></li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/20210324170301957.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:60%;" />
+
+
+
+<h3 id="透明传输"><a href="#透明传输" class="headerlink" title="透明传输"></a>透明传输</h3><p>使用SOH作为帧开始符、使用EOT作为帧结束符</p>
+<p><strong>数据部分一旦出现了SOH、EOT，需要进行转义</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210324170714909.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<h3 id="差错检验"><a href="#差错检验" class="headerlink" title="差错检验"></a>差错检验</h3><p>传输前计算出FCS（根据数据部分+首部计算）</p>
+<p>传输后再次计算，进行验证</p>
+<img src="https://img-blog.csdnimg.cn/20210324171004444.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom: 60%;" />
+
+<h2 id="CSMA-x2F-CD协议"><a href="#CSMA-x2F-CD协议" class="headerlink" title="CSMA&#x2F;CD协议"></a>CSMA&#x2F;CD协议</h2><blockquote>
+<p> 不同协议的帧首部和尾部不同，进行传输会进行拆除再封装</p>
+</blockquote>
+<p>1、使用了CSMA&#x2F;CD的网络称为<strong>以太网（Ethernet）</strong>，它传输的是<strong>以太网帧</strong></p>
+<ul>
+<li>格式：Ethernet V2标准</li>
+</ul>
+<p>2、为了检测正在发送的帧是否发生冲突，<strong>以太网的帧需要至少64个字节</strong></p>
+<p>3、<strong>用交换机组建的网络，已经支持全双工通信，不需要再使用CSMA&#x2F;CD，但是它传输的依然是以太网帧，所以交换机组建的网络依然叫以太网</strong></p>
+<h3 id="Ethernet-V2帧的格式"><a href="#Ethernet-V2帧的格式" class="headerlink" title="Ethernet V2帧的格式"></a>Ethernet V2帧的格式</h3><p><img src="https://img-blog.csdnimg.cn/20210324172738505.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>⚠️ <strong>没有帧开始符和帧结束符</strong></p>
+<p>以太网使用曼彻斯特编码，不需要帧开始符、帧结束符</p>
+<p><strong>1、以太网帧结构</strong></p>
+<ul>
+<li><p>首部：目标MAC地址 + 源MAC地址 + 类型（ipv4或者ipv6）</p>
+</li>
+<li><p>数据：IP数据包</p>
+</li>
+<li><p>尾部：FCS</p>
+</li>
+</ul>
+<p><strong>数据长度至少：64 - 4 - 6 - 6 - 2 &#x3D; 46字节，最多1500个字节（MTU）</strong></p>
+<p>2、当数据部分长度小于46字节时</p>
+<ul>
+<li>数据链路层会在数据后面加入一些字节填充</li>
+<li>接收端会将添加的字节删除</li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/2021032417554882.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p><strong>3、长度总结</strong></p>
+<ul>
+<li>以太网帧的数据长度：46—1500字节</li>
+<li>以太网帧的长度：64—1518字节（目标MAC+源MAC+类型+数据+FCS）</li>
+</ul>
+<h2 id="PPP协议"><a href="#PPP协议" class="headerlink" title="PPP协议"></a>PPP协议</h2><p>点对点协议</p>
+<p><strong>PPP帧</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210324193440768.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<h1 id="网络层-1"><a href="#网络层-1" class="headerlink" title="网络层"></a>网络层</h1><p>TCP&#x2F;IP的心脏是网络层，这一层主要由<strong>IP和ICMP协议组成</strong>。</p>
+<h2 id="与数据链路层的关系"><a href="#与数据链路层的关系" class="headerlink" title="与数据链路层的关系"></a>与数据链路层的关系</h2><p>数据链路层提供直连两个设备之间通信的功能</p>
+<img src="https://img-blog.csdnimg.cn/20210324210909815.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom: 67%;" />
+
+<p>每张票只能在限定区间内移动，这个区间就如同数据链路，出发地和终点就如同源地址和目标地址</p>
+<p>行程表就相当于网络层</p>
+<h2 id="数据包"><a href="#数据包" class="headerlink" title="数据包"></a>数据包</h2><p>网络层数据包（IP数据包，packet）由<strong>首部、数据</strong>2部分组成</p>
+<ul>
+<li><strong>数据：一般由传输层传递下来的数据段（segment）</strong></li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/20210325092817451.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<h3 id="首部"><a href="#首部" class="headerlink" title="首部"></a>首部</h3><h4 id="版本、首部长度、区分服务"><a href="#版本、首部长度、区分服务" class="headerlink" title="版本、首部长度、区分服务"></a>版本、首部长度、区分服务</h4><p><strong>1、版本（Version）</strong> 4位</p>
+<ul>
+<li>占4位</li>
+<li>0b0100：IPv4</li>
+<li>0b0110：IPv6</li>
+</ul>
+<p><strong>2、首部长度</strong> 4位</p>
+<ul>
+<li>占4位</li>
+<li><strong>二进制乘以4才是最终长度</strong></li>
+<li>0b0101：20（最小值）</li>
+<li>0b1111：60（最大值），首部固定长度20个字节，可变部分最大40个字节</li>
+</ul>
+<p><strong>3、区分服务</strong> 8位</p>
+<ul>
+<li>占8位</li>
+<li>可以提高网络的服务质量</li>
+</ul>
+<h4 id="总长度"><a href="#总长度" class="headerlink" title="总长度"></a>总长度</h4><p>1、占16个字节</p>
+<p>2、就是<strong>首部+数据长度之和</strong>，最大值是65535字节</p>
+<img src="https://img-blog.csdnimg.cn/20210325092904410.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p>由于帧的数据不能超过1500字节（MTU），所以过大的IP数据包，需要进行<strong>分片</strong>传输给数据链路层</p>
+<ul>
+<li><strong>每一片都有自己的网络层首部（IP首部）</strong></li>
+</ul>
+<h4 id="标识、标志"><a href="#标识、标志" class="headerlink" title="标识、标志"></a>标识、标志</h4><p>1、标识</p>
+<ul>
+<li>占16位</li>
+<li>数据包的ID，<strong>当数据包过大时进行分片时，同一个数据包的所有片的标识都是一样的</strong></li>
+<li>有一个计数器专门管理数据包的ID，每发出一个数据包，ID就加1</li>
+</ul>
+<p>2、标志</p>
+<ul>
+<li>占3位<ul>
+<li>第一位：保留</li>
+<li>第二位：<strong>DF（Don’t Fragment）</strong>：1代表不允许分片，0代表允许分片</li>
+<li>第三位：<strong>MF（More Fragments）</strong>：1代表不是最后一片，0代表是最后一片</li>
+</ul>
+</li>
+</ul>
+<h4 id="片偏移"><a href="#片偏移" class="headerlink" title="片偏移"></a>片偏移</h4><p>1、<strong>作用：为了将分片后的数据包按顺序还原</strong></p>
+<ul>
+<li>偏移为0，说明在最前面</li>
+</ul>
+<p>2、占13位</p>
+<p>3、片偏移*8：字节偏移</p>
+<p>4、<strong>每一片的长度一定是8的倍数</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210324204728853.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<h4 id="生存时间（TTL）"><a href="#生存时间（TTL）" class="headerlink" title="生存时间（TTL）"></a>生存时间（TTL）</h4><p>1、占8位</p>
+<p>2、每个路由器在转发之前将TTL减1，TTL为0，路由器返回错误报告</p>
+<p>3、使用ping命令后的TTL，能够推测出对方的操作系统，中间经过了多少路由器</p>
+<p><img src="https://img-blog.csdnimg.cn/20210325094120511.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="协议、首部检验和"><a href="#协议、首部检验和" class="headerlink" title="协议、首部检验和"></a>协议、首部检验和</h4><p><strong>1、协议</strong></p>
+<ul>
+<li><p>占8位</p>
+</li>
+<li><p>表明所封装的数据使用的协议</p>
+</li>
+</ul>
+<p>例如：</p>
+<ul>
+<li>ICMP：1</li>
+<li>IGMP：2</li>
+<li>TCP：6</li>
+<li>UDP：17</li>
+<li>IPv6：41</li>
+</ul>
+<p><strong>2、首部检验和</strong></p>
+<p>用于检查首部是否有错误</p>
+<h2 id="ICMP"><a href="#ICMP" class="headerlink" title="ICMP"></a>ICMP</h2><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904102988611598">https://juejin.cn/post/6844904102988611598</a></p>
+<p>ping命令使用ICMP协议</p>
+<p>在网络中ping是一个十分强大的TCP&#x2F;IP工具。它的作用主要为：</p>
+<p>（1）用来检测网络的连通情况和分析网络速度；</p>
+<p>（2）根据域名得到服务器IP；</p>
+<p>（3）根据ping返回的TTL值来判断对方所使用的操作系统及数据包经过路由器数量。</p>
+<p>我们通常会用它来直接ping IP地址，来测试网络的连通情况。</p>
+<hr/>
+
+<p>ICMP 的全称是 Intent Control Message Protocol, 中文过来就是 互联网控制报文协议。</p>
+<ul>
+<li>它是互联网协议族的核心协议之一。</li>
+<li>它用于TCP&#x2F;IP网络中发送控制消息，提供可能发生在通信环境中的各种问题反馈，通过这些信息，使管理者可以对所发生的问题作出诊断，然后采取适当的措施解决。</li>
+</ul>
+<p>在IP通信中，经常有数据包到达不了对方的情况。原因是，在通信途中的某处的一个路由器由于不能处理所有的数据包，就将数据包一个一个丢弃了。或者，虽然到达了对方，但是由于搞错了端口号，服务器软件可能不能接受它。这时，在错误发生的现场，为了联络而飞过来的信鸽就是ICMP 报文。</p>
+<p>在IP 网络上，由于数据包被丢弃等原因，为了控制将必要的信息传递给发信方。ICMP 协议是为了辅助IP 协议，交换各种各样的控制信息而被制造出来的。</p>
+<p><strong>ICMP的主要功能：</strong></p>
+<p>1.确认IP包是否成功送达目标地址。<br>2.通知在发送过程当中IP包被废弃的具体原因。</p>
+<h3 id="报文"><a href="#报文" class="headerlink" title="报文"></a>报文</h3><p>ICMP报文主要分为两种类型：</p>
+<ul>
+<li>查询报文</li>
+<li>差错报文</li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/20191202220144274.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzODA0MDgw,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:70%;" />
+
+<p><strong>1、查询报文 （Echo Request与 Echo Reply）</strong></p>
+<p>定义：发送端主动发起请求，并且获取到应答。</p>
+<p>常见应用：Ping</p>
+<p>Ping 就是主动请求，获取到主动应答。但是 Ping 是在原生的 ICMP 中添加了自定义格式区域。例如 Ping 中放了发送的请求时间，以此计算出路程。所以，其实在 Ping 的报文中会加入序号，以用来区分数据包，从而提高计算时间或者路程的准确性。</p>
+<h3 id="ICMP实现之ping命令"><a href="#ICMP实现之ping命令" class="headerlink" title="ICMP实现之ping命令"></a>ICMP实现之ping命令</h3><p>ping 命令用来在IP 层次上调查与指定机器是否连通，调查数据包往复需要多少时间。</p>
+<p>为了实现这个功能，<strong>ping 命令使用了两个ICMP 报文</strong>。</p>
+<p><img src="https://img-blog.csdnimg.cn/20191202224213646.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzODA0MDgw,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><strong>1.向目标服务器发送回送请求。</strong></p>
+<p>首先，向目标服务器发出<strong>回送请求</strong>（类型是8，代码是0）报文（同2）。</p>
+<p>在这个回送请求报文里，除了类型和代码字段，还被追加了标识符和序号字段。标识符和序号字段分别是16 位的字段。ping 命令在发送回送请求报文时，在这两个字段里填入任意的值。对于标识符，应用程序执行期间送出的所有报文里填入相同的值。对于序号，每送出一个报文数值就增加1。而且，回送请求的选项数据部分用来装任意数据。这个任意数据用来调整ping 的交流数据包的大小。</p>
+<p><strong>2.返回回送回答。</strong></p>
+<p>计算机送出的回送请求到达目标服务器后，服务器回答这一请求，向送信方发送回送请求（类型是0，代码是0）（同3）。</p>
+<p>这个ICMP 回送回答报文在IP 层来看，与被送来的回送请求报文基本上一样。不同的只是，源和目标IP 地址字段被交换了，类型字段里填入了表示回送回答的0。也就是，从送信方来看，自己送出的ICMP 报文从目标服务器那里象鹦鹉学舌那样原样返回了。</p>
+<p>送信方的计算机可以通过收到回送回答报文，来确认目标服务器在工作着。进一步，记住发送回送请求报文的时间，与接收到回送回答报文的时间一比较，就能计算出报文一去一回往复所需要的时间（同4）。</p>
+<p>但是，收到的回送回答报文里写的只是类型和代码的话，发送方计算机将无法判断它是否是自己发出去请求的回答。因此，前面说到的标识符和序号字段就有它的意义了。将这两个值与回送回答报文中的相同字段值一比较，送行方计算机就能够简单地检测回送回答是否正确了。执行ping 命令而调查的结果没什么问题的话，就将目标服务器的IP 地址，数据大小，往复花费的时间打印到屏幕上。</p>
+<p><strong>3.用ping 命令不能确定与对方连通的原因大致有三个。</strong></p>
+<p>1）目标服务器不存在；</p>
+<p>2)花在数据包交流上的时间太长ping 命令认为超时；</p>
+<p>3）目标服务器不回答ping 命令。</p>
+<p>如果是原因2），通过ping 命令的选项来延长到超时的等待时间，就能正确显示结果了。如果原因是1）或3）的话，仅凭ping 命令的结果就不能判断是哪方了。正如这样，ping 命令不一定一定能判断对方是否存在。</p>
+<h1 id="传输层-1"><a href="#传输层-1" class="headerlink" title="传输层"></a>传输层</h1><p>传输层有2个协议</p>
+<ul>
+<li>TCP（Transmission Control Protocol）：传输控制协议</li>
+<li>UDP（User Datagram Protocol）：用户数据包协议</li>
+</ul>
+<p>区别：</p>
+<img src="https://img-blog.csdnimg.cn/20210325094553934.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<ul>
+<li>TCP需要建立连接（三次握手，四次挥手）；UDP无连接（不管能不能连接上，直接把数据扔过去）</li>
+<li>TCP是可靠传输，不会丢包（会重新发）；UDP不可靠</li>
+</ul>
+<p>1、TCP提供可靠交付，无差错、不丢失、不重复，并且按照顺序到达；UDP继承了IP包的特性，不保证不丢失，不保证按顺序到达</p>
+<p>2、TCP面向字节流，UDP继承了IP的特性，基于数据报，一个个发送一个个收</p>
+<p>3、TCP可以有拥塞控制，会调整自己发送速度；UDP不会控制</p>
+<h2 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h2><h3 id="数据格式"><a href="#数据格式" class="headerlink" title="数据格式"></a>数据格式</h3><ul>
+<li><p>UDP是无连接的，减少了建立和释放连接的开销</p>
+</li>
+<li><p>UDP尽最大能力交付，不保证可靠交付</p>
+</li>
+<li><p>因此，不需要维护一些复杂的参数，<strong>只有8个字节</strong></p>
+</li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/20210325095859574.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom: 70%;" />
+
+<hr/>
+
+<p><strong>UDP长度</strong></p>
+<p>占16位</p>
+<p><strong>首部长度+数据长度</strong></p>
+<hr/>
+
+<p><strong>UDP检验和</strong></p>
+<p>1、计算内容：伪首部+首部+数据</p>
+<p>2、<strong>伪首部</strong></p>
+<ul>
+<li><strong>12位</strong></li>
+<li>源IP地址、目的IP地址、保留（0）、协议号（17）、UDP长度</li>
+<li><strong>只在计算检验和起作用，不会传递给网络层</strong></li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/20210325100246669.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:67%;" />
+
+<hr/>
+
+<p><strong>源端口、目标端口</strong></p>
+<p><strong>1、目标端口</strong></p>
+<ul>
+<li><p>16位</p>
+</li>
+<li><p>端口号：0-65535</p>
+</li>
+<li><p>服务器的端口，监听客户端的数据</p>
+</li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/20210325101028109.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:53%;" />
+
+<p><strong>2、源端口</strong></p>
+<ul>
+<li>16位</li>
+<li>客户端的端口</li>
+<li>临时开启的随机端口</li>
+</ul>
+<hr>
+
+
+<p><strong>UDP的三大特点</strong></p>
+<ul>
+<li><p>沟通简单，不需要大量的数据结构、处理逻辑、包头字段</p>
+</li>
+<li><p>轻信他人，不会建立连接；<strong>可以一对多传输数据</strong></p>
+</li>
+<li><p>不会拥塞控制</p>
+</li>
+</ul>
+<p><strong>UDP的三大使用场景</strong></p>
+<ul>
+<li>需要的资源少，在网络比较好的内网，对于丢包不敏感的应用</li>
+<li>不需要一对一沟通，建立连接，<strong>可以广播的应用</strong><ul>
+<li>UDP的不面向连接的功能可以使得可以承载<strong>广播或者多播</strong>的协议；</li>
+<li>DHCP就是广播的形式</li>
+</ul>
+</li>
+<li>需要处理速度快，时延低，可以容忍少数丢包</li>
+</ul>
+<h2 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h2><h3 id="数据格式-1"><a href="#数据格式-1" class="headerlink" title="数据格式"></a>数据格式</h3> <img src="https://img-blog.csdnimg.cn/20210325110252500.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<hr/>
+
+<p><strong>数据偏移</strong></p>
+<ul>
+<li><strong>占4位</strong>，取值范围：0101到1111</li>
+<li><strong>乘以4</strong>：首部长度（最小20，最大60）</li>
+</ul>
+<blockquote>
+<p>❓UDP首部有个16位的字段记录了整个UDP报文段的长度（首部+数据），但是TCP的首部中仅仅有个4个字段记录了TCP报文段的首部长度，并没有记录TCP报文段的数据长度</p>
+</blockquote>
+<p>分析：</p>
+<ul>
+<li>UDP首部16位的长度字段是冗余的，纯粹是为了保证首部是32bit对齐</li>
+<li>TCP&#x2F;UDP的数据长度，完全可以由IP数据包的首部推测出来</li>
+</ul>
+<p><strong>传输层的数据长度 &#x3D; 网络层的总长度 - 网络层的首部长度 - 传输层的首部长度</strong></p>
+<hr/>
+
+<p><strong>保留</strong></p>
+<ul>
+<li><strong>占6位</strong>，目前全位0</li>
+</ul>
+<hr/>
+
+<p><strong>检验和</strong></p>
+<p>和UDP一样，TCP检验和的计算内容：<strong>伪首部+首部+数据</strong></p>
+<ul>
+<li>伪首部：占用12字节，仅在计算检验和时起作用，不会传递给网络层</li>
+</ul>
+<hr/>
+
+<p><strong>标志位（Flags）</strong></p>
+<p><strong>1、URG（urgent）</strong>紧急位</p>
+<ul>
+<li>当URG&#x3D;1时，<strong>紧急指针字段才有效</strong>，表示当前报文段中有紧急数据，应优先传送</li>
+</ul>
+<p><strong>2、ACK（acknowledge）</strong></p>
+<ul>
+<li>当ACK&#x3D;1时，<strong>确认号字段才有效</strong></li>
+</ul>
+<p><strong>3、PSH（push）</strong></p>
+<p><strong>4、RST（rest）</strong>重置</p>
+<ul>
+<li>当RST&#x3D;1，表示连接中出现严重差错，如图</li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/20210325114652530.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:30%;" />
+
+<p><strong>5、SYN（Syn）</strong></p>
+<ul>
+<li>当SYN&#x3D;1，ACK&#x3D;0时，表示这是一个<strong>建立连接的请求</strong></li>
+<li>当SYN&#x3D;1，ACK&#x3D;1时，表示<strong>对方同意建立连接</strong></li>
+</ul>
+<p><strong>6、FIN（Finsh）</strong></p>
+<ul>
+<li>当FIN&#x3D;1，表示<strong>数据发送完毕，要求释放连接</strong></li>
+</ul>
+<hr/>
+
+<p><strong>序号、确认号</strong></p>
+<p><strong>1、序号（seq）</strong></p>
+<ul>
+<li>4个字节，32位</li>
+<li>首先，在传输过程中的每一个字节都有一个编号</li>
+<li>在建立连接后，序号代表：<strong>这一次传递给对方的TCP数据部分的第一个字节的编号</strong></li>
+</ul>
+<p><strong>2、确认号（ack）</strong></p>
+<ul>
+<li>4个字节，32位</li>
+<li>在建立连接之后，代表：<strong>期望对方下一次传过来的TCP数据部分的第一个字节编号</strong></li>
+</ul>
+<hr/>
+
+<p><strong>窗口</strong></p>
+<ul>
+<li>2个字节，16位</li>
+<li>这个字段有<strong>流量控制</strong>功能，用来告诉对方下一次允许发送的数据大小（字节为单位）</li>
+</ul>
+<hr/>
+
+<h3 id="可靠传输"><a href="#可靠传输" class="headerlink" title="可靠传输"></a>可靠传输</h3><p><img src="https://img-blog.csdnimg.cn/20210325143351370.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="停止等待ARQ协议"><a href="#停止等待ARQ协议" class="headerlink" title="停止等待ARQ协议"></a>停止等待ARQ协议</h4><p>自动重传请求，超时重传</p>
+<img src="https://img-blog.csdnimg.cn/20210325130111407.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<img src="https://img-blog.csdnimg.cn/20210325130243290.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+
+
+<p><strong>1) 无差错情况:</strong></p>
+<p>发送方发送分组,接收方在规定时间内收到,并且回复确认.发送方再次发送。</p>
+<p><strong>2) 出现差错情况（超时重传）:</strong></p>
+<p>停止等待协议中超时重传是指只要超过一段时间仍然没有收到确认，就重传前面发送过的分组（认为刚才发送过的分组丢失了）。</p>
+<p>因此每发送完一个分组需要设置一个超时计时器，其重传时间应比数据在分组传输的平均往返时间更长一些。</p>
+<p>这种自动重传方式常称为 <strong>自动重传请求 ARQ</strong> 。另外在停止等待协议中若收到重复分组，就丢弃该分组，但同时还要发送确认。</p>
+<p><strong>3) 确认丢失和确认迟到</strong></p>
+<ul>
+<li><strong>确认丢失</strong> ：确认消息在传输过程丢失。<ul>
+<li>当A发送M1消息，B收到后，B向A发送了一个M1确认消息，但却在传输过程中丢失。而A并不知道，在超时计时过后，A重传M1消息，B再次收到该消息后采取以下两点措施：1. 丢弃这个重复的M1消息，不向上层交付。 2. 向A发送确认消息。（不会认为已经发送过了，就不再发送。A能重传，就证明B的确认消息丢失）。</li>
+</ul>
+</li>
+<li><strong>确认迟到</strong> ：确认消息在传输过程中迟到。<ul>
+<li>A发送M1消息，B收到并发送确认。在超时时间内没有收到确认消息，A重传M1消息，B仍然收到并继续发送确认消息（B收到了2份M1）。此时A收到了B第二次发送的确认消息。接着发送其他数据。过了一会，A收到了B第一次发送的对M1的确认消息（A也收到了2份确认消息）。处理如下：1. A收到重复的确认后，直接丢弃。2. B收到重复的M1后，也直接丢弃重复的M1。</li>
+</ul>
+</li>
+</ul>
+<p><strong>优缺点：</strong></p>
+<ul>
+<li><strong>优点：</strong> 简单</li>
+<li><strong>缺点：</strong> 信道利用率低，等待时间长</li>
+</ul>
+<h4 id="连续ARQ协议-滑动窗口协议"><a href="#连续ARQ协议-滑动窗口协议" class="headerlink" title="连续ARQ协议+滑动窗口协议"></a>连续ARQ协议+滑动窗口协议</h4><img src="https://img-blog.csdnimg.cn/202103251309088.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:60%;" />
+
+<p>发送方的窗口大小由接收方决定</p>
+<p><strong>流程：</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210325132727690.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:70%;" />
+
+<p><strong>优缺点：</strong></p>
+<ul>
+<li><strong>优点：</strong> 信道利用率高，容易实现，即使确认丢失，也不必重传。</li>
+<li><strong>缺点：</strong> 不能向发送方反映出接收方已经正确收到的所有分组的信息。<ul>
+<li>比如：发送方发送了 5条 消息，中间第三条丢失（3号），这时接收方只能对前两个发送确认。发送方无法知道后三个分组的下落，而只好把后三个全部重传一次。这也叫 Go-Back-N（回退 N），表示需要退回来重传已经发送过的 N 个消息。</li>
+</ul>
+</li>
+</ul>
+<hr/>
+
+<h5 id="SACK（选择性确认）"><a href="#SACK（选择性确认）" class="headerlink" title="SACK（选择性确认）"></a>SACK（选择性确认）</h5><p>1、在TCP通信过程中，如果发送序列中间某个数据包丢失（比如发送1、2、3、4，其中3丢失了）</p>
+<ul>
+<li><p>TCP会通过重传最后确认的分组后续的分组（最后确认的是2，会重传3、4）</p>
+</li>
+<li><p>这样原先已经正确传输的分组也可能会重复发送（比如4），降低了TCP的性能</p>
+</li>
+</ul>
+<p>2、为了改善上述情况，<strong>使用SACK（selective acknowledge）技术</strong></p>
+<ul>
+<li>告诉发送方哪些数据丢失，哪些数据已经提前收到</li>
+<li>使TCP只重新发送丢失的包（比如3），不会发送后续所有的分组（比如4）</li>
+</ul>
+<p><strong>3、SACK会放在TCP首部的选项部分</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210325134357613.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="TCP首部" style="zoom:50%;" />
+
+<ul>
+<li>Kind：占1字节，值为5代表这是SACK选项</li>
+<li>Length：占1字节，表明SACK选项共占用多少字节</li>
+<li>Left Edge：占4字节，左边界</li>
+<li>Right Edge：占4字节，右边界</li>
+</ul>
+<p><strong>通过左边界和右边界表示收到的数据，一对8个字节，最多携带4组，（40-1-1）&#x2F;8</strong></p>
+<p>SACK最大占用字节数：4 * 8 + 2 &#x3D; 34</p>
+<p><img src="https://img-blog.csdnimg.cn/20210325134140585.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>为什么在传输层进行分段，而不是在网络层分片？</p>
+</blockquote>
+<p>1、可以提高重传的性能</p>
+<p>2、可靠传输是在传输层进行控制的</p>
+<ul>
+<li>如果在传输层不分段，一旦出现数据丢失，整个传输层的数据都需要重传</li>
+<li>如果在传输层分段，一旦出现数据丢失，只需要重传丢失的那些段</li>
+</ul>
+<h3 id="流量控制"><a href="#流量控制" class="headerlink" title="流量控制"></a>流量控制</h3><p><strong>1、如果接收方的缓存区满了，发送方还在发数据</strong></p>
+<ul>
+<li>接收方只能把收到的数据包丢掉，大量的丢包会极大浪费网络资源</li>
+<li>所以要进行流量控制</li>
+</ul>
+<p><strong>2、什么是流量控制？</strong></p>
+<p>让发送方的发送速率不要太快，让接收方来得及处理</p>
+<p><strong>3、原理</strong></p>
+<ul>
+<li>通过确认报文中<strong>窗口字段</strong>来控制发送方的发送速率</li>
+<li>发送方的发送窗口大小不能超过接收方给出的窗口大小</li>
+<li>当发送方收到接收窗口大小为0时，发送方就会停止发送数据</li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/20210325152150984.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:67%;" />
+
+<h4 id="特殊情况"><a href="#特殊情况" class="headerlink" title="特殊情况"></a>特殊情况</h4><p>接收方给发送方发送了0窗口的报文段</p>
+<p>接收方又有了一些存储空间，给发送方发送的非0窗口的报文段丢失了</p>
+<p><strong>解决方案：</strong></p>
+<ul>
+<li>当发送方收到0窗口，这时发送方停止发送报文</li>
+<li>并且同时开启定时器，隔一段时间就去询问最新的窗口大小</li>
+<li>如果还是0，就会重置定时器</li>
+</ul>
+<h3 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h3><img src="https://img-blog.csdnimg.cn/20210325153704822.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p><strong>1、拥塞控制</strong></p>
+<ul>
+<li>防止过多的数据注入到网络中</li>
+<li>避免网络中路由器或链路过载</li>
+</ul>
+<p><strong>2、拥塞控制是一个全局性的过程</strong></p>
+<ul>
+<li>涉及所有的主机、路由器、与降低网络性能有关的所有因素</li>
+</ul>
+<p><strong>3、相比而言，流量控制时点对点通信的控制</strong></p>
+<h4 id="几个名词"><a href="#几个名词" class="headerlink" title="几个名词"></a>几个名词</h4><p><strong>1、MSS（maxium segment size）</strong></p>
+<ul>
+<li>每个段最大的数据部分大小</li>
+<li>在连接时确定，<strong>只在连接时出现</strong></li>
+<li><strong>理论上是1460字节，实际需要双方协商</strong></li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/20210325154534507.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:40%;" />
+
+
+
+<p><strong>2、cwnd：拥塞窗口</strong></p>
+<ul>
+<li>发送方根据自己估算的网络拥塞程度而设置的窗口值</li>
+<li>动态的</li>
+</ul>
+<p><strong>3、rwnd：接收窗口</strong></p>
+<p><strong>4、swnd：发送窗口</strong></p>
+<ul>
+<li>发送窗口 &#x3D; min（拥塞窗口，接收窗口）</li>
+</ul>
+<h4 id="慢开始（slow-start）"><a href="#慢开始（slow-start）" class="headerlink" title="慢开始（slow start）"></a>慢开始（slow start）</h4><img src="https://img-blog.csdnimg.cn/20210325160613345.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:60%;" />
+
+
+
+<p>1、令拥塞窗口为1个包，发送1个MSS</p>
+<p>2、收到一个确认之后，将拥塞窗口加倍，下一次就可以发送2个MSS</p>
+<p>3、同理加倍</p>
+<h4 id="拥塞避免（congestion-avoidance）"><a href="#拥塞避免（congestion-avoidance）" class="headerlink" title="拥塞避免（congestion avoidance）"></a>拥塞避免（congestion avoidance）</h4><img src="https://img-blog.csdnimg.cn/20210325161741220.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:67%;" />
+
+<p><strong>1、ssthresh（slow start threshold）：慢开始阈值，cwnd达到阈值后，以线性方式增长（加法增大）</strong></p>
+<p><strong>2、拥塞避免（加法增大）：拥塞窗口缓慢增大，防止网络过早出现拥塞</strong></p>
+<p><strong>3、乘法减小：只要网络出现拥塞，把ssthresh减半，于此同时，执行慢开始算法（拥塞窗口返回初始值：1个包）</strong></p>
+<ul>
+<li>如果网络出现频繁拥塞，阈值就会变得很小</li>
+</ul>
+<h4 id="快速重传（fast-retransmit）"><a href="#快速重传（fast-retransmit）" class="headerlink" title="快速重传（fast retransmit）"></a>快速重传（fast retransmit）</h4><img src="https://img-blog.csdnimg.cn/2021032516222975.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p><strong>1、接收方</strong></p>
+<ul>
+<li>每收到一个失序的分组后（m1 m2 m4），立即发出重复确认（m2）</li>
+<li>使发送方及时知道有分组没有到达，而不要等待自己发送数据时才进行确认（SACK）</li>
+</ul>
+<p><strong>2、发送方</strong></p>
+<ul>
+<li>只要连续收到三个重复确认（总共4个确认），就应该立即重传没有收到的报文段</li>
+<li>不需要等待重传计数器到期后再重传（超时重传）</li>
+</ul>
+<h4 id="快速恢复（fast-recovery）"><a href="#快速恢复（fast-recovery）" class="headerlink" title="快速恢复（fast recovery）"></a>快速恢复（fast recovery）</h4><img src="https://img-blog.csdnimg.cn/20210325162951118.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p>当发送方连续收到3个重复确认，就执行“乘法减小”，阈值减半</p>
+<ul>
+<li>为了预防网络丢包</li>
+</ul>
+<p><strong>与之前不同的是这次从阈值开始执行拥塞避免算法（加法增大）</strong></p>
+<hr/>
+
+<p><strong>小结</strong></p>
+<p>1、可靠传输：保证丢掉的包可以发给你（ARQ），超时重传</p>
+<p>2、流量控制：希望发的慢一点，<strong>点对点</strong>，接收端改变接收窗口放在缓存区溢出</p>
+<p>3、拥塞控制：大家一起维护网络不要这么拥塞，在流量控制的基础上控制</p>
+<ul>
+<li>V1：慢开始 -&gt; 拥塞避免 -&gt; 乘法减小（阈值减半） -&gt; 慢开始 -&gt; 拥塞避免……</li>
+<li>V2：慢开始 -&gt; 拥塞避免 -&gt; <strong>快重传</strong> -&gt; 乘法减小（阈值减半） -&gt; <strong>快恢复</strong> -&gt; 拥塞避免 ……</li>
+</ul>
+<h3 id="序号和确认号"><a href="#序号和确认号" class="headerlink" title="序号和确认号"></a>序号和确认号</h3><h4 id="相对值"><a href="#相对值" class="headerlink" title="相对值"></a>相对值</h4><img src="https://img-blog.csdnimg.cn/20210325174345833.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:60%;" />
+
+<h4 id="原生值"><a href="#原生值" class="headerlink" title="原生值"></a>原生值</h4><p>建立连接时，客户端和服务器都会生成随机的序号初始值</p>
+<img src="https://img-blog.csdnimg.cn/20210325175005651.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:33%;" />
+
+
+
+<img src="https://img-blog.csdnimg.cn/20210325175618780.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:33%;" />
+
+
+
+<h4 id="具体分析"><a href="#具体分析" class="headerlink" title="具体分析"></a>具体分析</h4><p>SYN&#x3D;1，代表第一次发信息，seq都为0</p>
+<img src="https://img-blog.csdnimg.cn/20210325181713417.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:54%;" />
+
+<img src="https://img-blog.csdnimg.cn/20210325181747929.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom: 50%;" />
+
+<img src="https://img-blog.csdnimg.cn/20210325182424161.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:60%;" />
+
+<h3 id="连接管理"><a href="#连接管理" class="headerlink" title="连接管理"></a>连接管理</h3><h4 id="建立连接（三次握手）"><a href="#建立连接（三次握手）" class="headerlink" title="建立连接（三次握手）"></a>建立连接（三次握手）</h4><img src="https://img-blog.csdnimg.cn/20210325184103290.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p>1、发起连接请求（<strong>SYN报文段</strong>），客户端发送初始序号x，请求发送到服务器；<strong>客户端进行同步已发送状态（第一次握手）</strong></p>
+<p>2、服务器接收连接请求，发送初始序号y，期望获得客户端的x+1个字节，确认发送到客户端（<strong>SYN+ACK</strong>）；<strong>服务器进入同步已接收状态（第二次握手）</strong></p>
+<p>3、客户端发出确认（<strong>ACK报文段</strong>），因为对方需要x+1，所以当前发送的是x+1，期望获得y+1个字节，<strong>连接已经建立（第三次握手）</strong></p>
+<hr/>
+
+<h5 id="状态"><a href="#状态" class="headerlink" title="状态"></a>状态</h5><p>CLOSED：客户端处于关闭状态</p>
+<p>LISTEN：服务器处于监听状态，等待客户端连接</p>
+<p>SYN-RCVD：表示服务器接受到了SYN报文，进入ESTABLISHED状态</p>
+<hr/>
+
+<p><strong>前两次握手的特点：</strong></p>
+<ul>
+<li>SYN都为1</li>
+<li>数据部分长度都为0</li>
+<li>TCP头部一般是32个字节<ul>
+<li>固定：20字节</li>
+<li>选项：12字节<ul>
+<li>MSS</li>
+<li>窗口缩放系数</li>
+<li>是否支持SACK</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>双方交换确认一些信息，比如MSS、是否支持SACK、窗口缩放系数等</strong></li>
+</ul>
+<h5 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h5><blockquote>
+<p>为什么要三次握手？不是两次？</p>
+</blockquote>
+<p>主要目的：防止服务器端一直等待，浪费资源</p>
+<p>如果建立连接只需要2次握手，可能会出现的情况：</p>
+<ul>
+<li>如果客户端发出的第一个连接请求因为网络延迟，在连接释放后的才到达服务器，本来这是一个早已失效的连接请求，但服务器收到这个请求后误以为是客户端再次发出的一个新的连接请求，于是发出了确认，新的连接就建立了。<strong>但是由于客户端没有想连接服务器的意愿，所以客户端不会理睬服务器的确认</strong>，服务器会一直等待，浪费了资源。</li>
+</ul>
+<p>如果采用三次握手的方法，服务器进行确认时，客户端不会理睬，就不会进行第三次握手，所以服务器就不会进入连接建立状态。</p>
+<hr/>
+
+<blockquote>
+<p>第三次握手失败了怎么处理？</p>
+</blockquote>
+<p>此时服务器状态为同步已接收状态，如果收不到客户端的确认，就会再次发送SYN+ACK包，多次重发还是不行就会发送RTS报文段，强制关闭连接</p>
+<img src="https://img-blog.csdnimg.cn/20210325200355557.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:40%;" />
+
+<hr/>
+
+<blockquote>
+<p>半连接队列和全连接队列</p>
+</blockquote>
+<p>TCP三次握手时，Linux内核会维护两个队列：</p>
+<ul>
+<li>半连接队列，被称为SYN队列</li>
+<li>全连接队列，被称为 accept队列</li>
+</ul>
+<p>服务端收到客户端发起的 SYN 请求后，<strong>内核会把该连接存储到半连接队列</strong>，并向客户端响应 SYN+ACK，接着客户端会返回 ACK，服务端收到第三次握手的 ACK 后，<strong>内核会把连接从半连接队列移除，然后创建新的完全的连接，并将其添加到 accept 队列，等待进程调用 accept 函数时把连接取出来。</strong></p>
+<img src="https://pic3.zhimg.com/80/v2-351442fbc23ab0af4980141cf140001a_1440w.jpg" alt="img" style="zoom:30%;" />
+
+<p><strong>不管是半连接队列还是全连接队列，都有最大长度限制，超过限制时，内核会直接丢弃，或返回 RST 包。</strong></p>
+<p>当服务端并发处理大量请求时，如果 TCP 全连接队列过小，就容易溢出。发生 TCP 全连接队溢出的时候，后续的请求就会被丢弃，这样就会出现服务端请求数量上不去的现象。</p>
+<ol>
+<li><strong>如果半连接队列满了，并且没有开启 tcp_syncookies，则会丢弃；</strong></li>
+<li><strong>若全连接队列满了，且没有重传 SYN+ACK 包的连接请求多于 1 个，则会丢弃；</strong></li>
+<li><strong>如果没有开启 tcp_syncookies，并且 max_syn_backlog 减去 当前半连接队列长度小于 (max_syn_backlog &gt;&gt; 2)，则会丢弃；</strong></li>
+</ol>
+<h4 id="释放连接（四次挥手）"><a href="#释放连接（四次挥手）" class="headerlink" title="释放连接（四次挥手）"></a>释放连接（四次挥手）</h4><img src="https://img-blog.csdnimg.cn/20210326102057846.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:60%;" />
+
+<h5 id="状态-1"><a href="#状态-1" class="headerlink" title="状态"></a>状态</h5><p><strong>1、FIN-WAIT-1</strong></p>
+<ul>
+<li>向对方发送FIN报文，此时进入这个状态</li>
+<li>一旦进入这个状态，说明这一方是<strong>主动关闭的</strong></li>
+</ul>
+<p><strong>2、CLOSE-WAIT</strong></p>
+<ul>
+<li>当对方发送FIN给自己时，自己会回应一个ACK给对方，进入这个状态</li>
+<li>这个状态下，要考虑是否有数据需要发送给对方，如果没有就发送FIN报文给对方</li>
+</ul>
+<p><strong>3、FIN-WAIT-2</strong></p>
+<ul>
+<li>只要对方发送ACK确认后，主动方进入这个状态，等待对方的FIN报文</li>
+</ul>
+<p>4、CLOSING：一种罕见的状态</p>
+<ul>
+<li>表示你发送FIN报文后，没有收到对方的ACK报文，反而收到了FIN报文</li>
+<li>如果双方几乎同时准备关闭连接时，就出现双方同时发送FIN报文段情况，进入这种状态</li>
+</ul>
+<p><strong>5、TIME-WAIT</strong></p>
+<ul>
+<li>表示收到了对方的FIN报文，并发出了ACK报文</li>
+<li><strong>等待2MSL后即可进入CLOSED状态</strong></li>
+</ul>
+<p><strong>6、LAST-ACK</strong></p>
+<ul>
+<li>被动方发送FIN报文后，最后等待对方的ACK报文</li>
+</ul>
+<h5 id="细节"><a href="#细节" class="headerlink" title="细节"></a>细节</h5><p>1、TCP&#x2F;IP协议栈的设计上，允许任何一方先发起断开请求</p>
+<p><strong>2、TIME-WAIT状态，等待一段时间后再真正关闭</strong></p>
+<ul>
+<li>一般是<strong>等待2倍的MSL（最大分段生存期）</strong><ul>
+<li>MSL是TCP报文在Internet上的最长生存时间</li>
+<li>每个具体的TCP实现都必须选择一个确定的MSL值，建议是2分钟</li>
+</ul>
+</li>
+<li>如果直接进入CLOSED状态，<strong>因为网络原因对方没有收到ACK，所以对方就会重发FIN</strong><ul>
+<li>可能出现的情况：<ul>
+<li>客户端没有任何响应，服务器干等，甚至多次发送FIN，浪费资源</li>
+<li>客户端有个新的应用程序刚好分配了同一个端口号，新的应用程序收到FIN后马上开始断开连接的操作，本来是想建立连接的</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="问题-1"><a href="#问题-1" class="headerlink" title="问题"></a>问题</h5><blockquote>
+<p>为什么要4次挥手？</p>
+</blockquote>
+<p>1、TCP是全双工模式</p>
+<p>2、<strong>第一次挥手：主机1发出FIN报文段</strong></p>
+<ul>
+<li>主机1告诉主机2，主机1已经没有数据需要发送了，但是主机1还是可以接受主机2发来的数据</li>
+</ul>
+<p>3、<strong>第二次挥手：主机2发出ACK报文段</strong></p>
+<ul>
+<li>主机2已经知道主机1没有数据发送了，但是主机2还是可以发送数据给主机1的</li>
+</ul>
+<p>4、<strong>第三次挥手：主机2发出FIN报文段</strong></p>
+<ul>
+<li>主机2告诉主机1，主机2没有数据需要发送了</li>
+</ul>
+<p>5、<strong>第四次挥手：主机1返回ACK报文段</strong></p>
+<ul>
+<li>主机1知道主机2没有数据发送了</li>
+</ul>
+<hr/>
+
+<blockquote>
+<p>半关闭状态</p>
+</blockquote>
+<p>TCP提供了连接的一端在结束它的发送后还能接收来自另一端数据的能力</p>
+<blockquote>
+<p>半打开</p>
+</blockquote>
+<p>如果一方已经关闭或异常终止，而另一方却对此毫不知情，这种连接就称为半打开的。</p>
+<h3 id="定时器"><a href="#定时器" class="headerlink" title="定时器"></a>定时器</h3><p><strong>1、连接建立定时器</strong></p>
+<p>当发送端发送 SYN 报文想建立一条新连接时，会开启连接建立定时器，如果没有收到对端的 ACK 包将进行重传。</p>
+<hr/>
+
+<p><strong>2、重传定时器</strong></p>
+<p>第一个定时器讲的是连接建立没有收到 ACK 的情况，如果在发送数据包的时候没有收到 ACK 呢？</p>
+<p>这就是这里要讲的第二个定时器重传定时器，重传定时器的时间是动态计算的，取决于 RTT 和重传的次数。</p>
+<hr/>
+
+<p><strong>3、延迟 ACK 定时器</strong></p>
+<p>在 TCP 收到数据包以后在没有数据包要回复时，不马上回复 ACK。这时开启一个定时器，等待一段时间看是否有数据需要回复。如果期间有数据要回复，则在回复的数据中捎带 ACK，如果时间到了也没有数据要发送，则也发送 ACK。</p>
+<hr/>
+
+<p><strong>4、坚持计时器</strong></p>
+<p>Persist 定时器是专门为<strong>零窗口探测</strong>而准备的。</p>
+<p>我们都知道 TCP 利用滑动窗口来实现流量控制，当接收端 B 接收窗口为 0 时，发送端 A 此时不能再发送数据，发送端此时开启 Persist 定时器，超时后发送一个特殊的报文给接收端看对方窗口是否已经恢复，这个特殊的报文只有一个字节</p>
+<hr/>
+
+<p><strong>5、保活定时器（keepalive timer）</strong></p>
+<p>如果通信以后一段时间有再也没有传输过数据，怎么知道对方是不是已经挂掉或者重启了呢？于是 TCP 提出了一个做法就是在连接的空闲时间超过 2 小时，会发送一个探测报文，如果对方有回复则表示连接还活着，对方还在，如果经过几次探测对方都没有回复则表示连接已失效，客户端会丢弃这个连接。</p>
+<hr/>
+
+<p><strong>6、FIN_WAIT_2 定时器</strong></p>
+<p>四次挥手过程中，主动关闭的一方收到 ACK 以后从 FIN_WAIT_1 进入 FIN_WAIT_2 状态等待对端的 FIN 包的到来，FIN_WAIT_2 定时器的作用是防止对方一直不发送 FIN 包，防止自己一直傻等。</p>
+<hr/>
+
+<p><strong>7、TIME_WAIT 定时器</strong></p>
+<p>TIME_WAIT 定时器也称为 2MSL 定时器，可能是这七个里面名气最大的，主动关闭连接的一方在 TIME_WAIT 持续 2 个 MSL 的时间，超时后端口号可被安全的重用。</p>
+<h1 id="应用层-（一）"><a href="#应用层-（一）" class="headerlink" title="应用层 （一）"></a>应用层 （一）</h1><img src="https://img-blog.csdnimg.cn/20210326132828336.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:33%;" />
+
+<h2 id="DNS协议"><a href="#DNS协议" class="headerlink" title="DNS协议"></a>DNS协议</h2><h3 id="域名"><a href="#域名" class="headerlink" title="域名"></a>域名</h3><p>由于IP地址不方便记忆，并且不能表达组织的名称和性质，人们设计出了域名（比如：baidu.com）</p>
+<ul>
+<li>但是，实际上为了访问到具体的主机，<strong>最终还得知道目标主机的IP地址</strong></li>
+</ul>
+<blockquote>
+<p>为什么不全程直接使用域名？</p>
+</blockquote>
+<p>IP地址4个字节，域名基本都需要十几个字节，这会增加路由器的负担，浪费流量</p>
+<hr/>
+
+<p><strong>域名分类</strong></p>
+<p>可以分为：</p>
+<p>1、顶级域名（TLD）</p>
+<ul>
+<li>通用顶级域名（gTLD）：.com、.net、.org等</li>
+<li>国家及地区顶级域名（ccTLD）</li>
+<li>新通用顶级域名（new gTLD）</li>
+</ul>
+<p>2、二级域名：顶级域名之下的域名</p>
+<ul>
+<li>在通用顶级域名下，一般指域名注册人的名称，例如baidu、google等</li>
+<li>在国家及地区顶级域名下，一般指注册类别，例如com、edu、gov等（比如：neu.eud.cn 😊）</li>
+</ul>
+<p>3、三级域名</p>
+<p>…..</p>
+<img src="https://img-blog.csdnimg.cn/20210326135941171.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:70%;" />
+
+<h3 id="DNS概述"><a href="#DNS概述" class="headerlink" title="DNS概述"></a>DNS概述</h3><p>1、DNS（Domain Name System），域名系统</p>
+<p>2、作用：利用DNS协议，可以<strong>将域名解析成对应的IP地址</strong></p>
+<p><strong>3、DNS可以基于UDP协议，也可以基于TCP协议</strong></p>
+<p>4、DNS服务器<strong>占用53端口</strong></p>
+<h3 id="DNS服务器"><a href="#DNS服务器" class="headerlink" title="DNS服务器"></a>DNS服务器</h3><img src="https://img-blog.csdnimg.cn/20210326135410915.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:53%;" />
+
+<p>1、客户端先访问最近一台DNS服务器（客户端自己配置的服务器）</p>
+<p>2、所有的DNS服务器都记录了<strong>DNS根域名服务器的IP地址</strong></p>
+<p>3、<strong>上级DNS服务器记录了下一级DNS服务器的IP地址</strong></p>
+<p>4、全球共13台IPv4的DNS根DNS服务器、25台IPv6DNS根DNS服务器</p>
+<h3 id="DNS解析流程"><a href="#DNS解析流程" class="headerlink" title="DNS解析流程"></a>DNS解析流程</h3><p>那么，在浏览器输入域名的时候，DNS是怎样解析的呢？分以下几步：</p>
+<ol>
+<li>本地hosts文件</li>
+<li>本地DNS缓存</li>
+<li>DNS服务器缓存</li>
+<li>DNS服务器递归查找</li>
+</ol>
+<hr/>
+
+<p><strong>本地hosts文件</strong></p>
+<p>修改hosts文件对于开发者来说并不陌生，这样我们可以不改变线上域名的配置，然后直接通过域名访问我们想要访问的机器。</p>
+<hr/>
+
+<p><strong>本地DNS缓存</strong></p>
+<p>如果hosts文件没有的话，那么DNS就会查看本地的DNS缓存，如果有的话就直接返回对应的ip即可。下面是我本地对tlab.cloud.tencent.com的DNS解析，因为之前已经解析过来，所以缓存里就有对应的ip地址：193.112.230.97。</p>
+<img src="https://user-gold-cdn.xitu.io/2019/1/5/1681c963263c7756?imageView2/0/w/1280/h/960/ignore-error/1" alt="img" style="zoom:43%;" />
+
+<hr/>
+
+<p><strong>DNS服务器缓存</strong></p>
+<p>如果是第一次访问某个域名的话，那本地缓存肯定是没有的。</p>
+<p>所以就会到DNS服务器查找，链接网络之后，我们的电脑就会有对应的DNS服务器的地址，下图：</p>
+<img src="https://user-gold-cdn.xitu.io/2019/1/5/1681c8cac99f2246?imageView2/0/w/1280/h/960/ignore-error/1" alt="img" style="zoom:33%;" />
+
+<p>本地DNS服务器一般由ISP进行维护</p>
+<p><strong>访问本地DNS服务器</strong>，如果缓存中有映射关系，就返回；否则，访问根DNS服务器</p>
+<hr/>
+
+<p><strong>DNS服务器递归查找</strong></p>
+<p>如果DNS服务器也没有缓存的话，那就要进行递归查找:</p>
+<p>1、<strong>本地DNS服务器访问根DNS服务器</strong>，发现是.com结尾，返回负责.com区域对应的顶级域名服务器的IP地址</p>
+<p>2、<strong>本地DNS服务器访问顶级域名服务器</strong>，发现microsoft.com，返回权威DNS服务器的IP地址</p>
+<p>3、<strong>本地DNS服务器访问权威DNS服务器，</strong>最终找到域名对应的IP地址，并且缓存</p>
+<h2 id="DHCP协议"><a href="#DHCP协议" class="headerlink" title="DHCP协议"></a>DHCP协议</h2><h3 id="IP地址的分配"><a href="#IP地址的分配" class="headerlink" title="IP地址的分配"></a>IP地址的分配</h3><p>IP地址可以分为：静态IP地址、动态IP地址</p>
+<p><strong>1、静态IP地址</strong></p>
+<ul>
+<li>手动设置</li>
+<li>使用场景：<strong>不挪动的台式机、服务器等</strong></li>
+</ul>
+<p><strong>2、动态IP地址</strong></p>
+<ul>
+<li>从DHCP服务器自动获取IP地址</li>
+<li>使用场景：<strong>无线设备（无线网）、移动设备（笔记本）等</strong></li>
+</ul>
+<h3 id="DHCP概述"><a href="#DHCP概述" class="headerlink" title="DHCP概述"></a>DHCP概述</h3><p>1、DHCP，<strong>动态主机配置协议</strong></p>
+<p>2、<strong>基于UDP协议，客户端是68端口，服务器是67端口</strong></p>
+<p>3、DHCP服务器会从IP池中，挑选一个IP地址“出租”给客户端一段时间，时间到期就进行回收</p>
+<ul>
+<li><strong>平时上网的路由器就可以当作DHCP服务器</strong></li>
+</ul>
+<h3 id="DHCP分配IP地址的四个阶段"><a href="#DHCP分配IP地址的四个阶段" class="headerlink" title="DHCP分配IP地址的四个阶段"></a>DHCP分配IP地址的四个阶段</h3><p><strong>1、DISCOVER：发现服务器</strong></p>
+<ul>
+<li>发广播包（源IP是0.0.0.0，目标IP是255.255.255.255，目标MAC是FF:FF:FF:FF:FF:FF）</li>
+</ul>
+<p><strong>2、OFFER：提供租约</strong></p>
+<ul>
+<li>服务器返回可以租用的IP地址，以及租用期限、子网掩码、网关、DNS等信息</li>
+</ul>
+<p><strong>3、REQUEST：选择IP地址</strong></p>
+<ul>
+<li>客户端选择一个OFFER，发送广播包进行回应</li>
+</ul>
+<p><strong>4、ACKNOWLEDGE：确认</strong></p>
+<ul>
+<li>被选中的服务器发送ACK数据包给客户端</li>
+</ul>
+<h3 id="细节-1"><a href="#细节-1" class="headerlink" title="细节"></a>细节</h3><p><strong>1、自动续约</strong></p>
+<p>客户端在租期不足的时候，自动向DHCP服务器发送REQUEST信息申请续约</p>
+<p><strong>2、DHCP可以跨网段分配IP地址吗</strong></p>
+<p>可以使用DHCP中继代理实现</p>
+<h1 id="应用层（二）"><a href="#应用层（二）" class="headerlink" title="应用层（二）"></a>应用层（二）</h1><h2 id="HTTP协议"><a href="#HTTP协议" class="headerlink" title="HTTP协议"></a>HTTP协议</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>1、HTTP：超文本传输协议</p>
+<p>2、是互联网中应用最广泛的应用层协议之一</p>
+<p>3、基于TCP</p>
+<p><strong>4、最初的目的：提供一种发布和接收HTML页面的方法，用URI来标识具体的资源</strong></p>
+<ul>
+<li><p><strong>URI</strong>：表示的是web上每一种可用的资源，如 HTML文档、图像、视频片段、程序等都由一个URI进行标识的。</p>
+</li>
+<li><p>URI通常由三部分组成：</p>
+<p>①资源的命名机制；</p>
+<p>②存放资源的主机名；</p>
+<p>③资源自身的名称。</p>
+</li>
+<li><p>URI包括URL</p>
+</li>
+</ul>
+<p>5、HTML：超文本标记语言</p>
+<ul>
+<li>可以用来编写网页</li>
+</ul>
+<h3 id="版本和标准"><a href="#版本和标准" class="headerlink" title="版本和标准"></a>版本和标准</h3><img src="https://img-blog.csdnimg.cn/20210326150454573.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<img src="https://img-blog.csdnimg.cn/2021032615084465.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:60%;" />
+
+<h3 id="请求过程-1"><a href="#请求过程-1" class="headerlink" title="请求过程"></a>请求过程</h3><p>HTTP 请求的发送HTTP 协议是基于 TCP 协议的，所以它使用面向连接的方式发送请求，通过 stream 二进制流的方式传给对方。当然，到了 TCP 层，它会把二进制流变成一个个报文段发送给服务器。</p>
+<p>在发送给每个报文段的时候，都需要对方有一个回应 ACK，来保证报文可靠地到达了对方。如果没有回应，那么 TCP 这一层会进行重新传输，直到可以到达。同一个包有可能被传了好多次，但是 HTTP 这一层不需要知道这一点，因为是 TCP 这一层在埋头苦干。</p>
+<p>TCP 层发送每一个报文的时候，都需要加上自己的地址（即源地址）和它想要去的地方（即目标地址），将这两个信息放到 IP 头里面，交给 IP 层进行传输。</p>
+<p>IP 层需要查看目标地址和自己是否是在同一个局域网。如果是，就发送 ARP 协议来请求这个目标地址对应的 MAC 地址，然后将源 MAC 和目标 MAC 放入 MAC 头，发送出去即可；如果不在同一个局域网，就需要发送到网关，还要需要发送 ARP 协议，来获取网关的 MAC 地址，然后将源 MAC 和网关 MAC 放入 MAC 头，发送出去。</p>
+<p>网关收到包发现 MAC 符合，取出目标 IP 地址，根据路由协议找到下一跳的路由器，获取下一跳路由器的 MAC 地址，将包发给下一跳路由器。</p>
+<p>这样路由器一跳一跳终于到达目标的局域网。这个时候，最后一跳的路由器能够发现，目标地址就在自己的某一个出口的局域网上。于是，在这个局域网上发送 ARP，获得这个目标地址的 MAC 地址，将包发出去。</p>
+<p>目标的机器发现 MAC 地址符合，就将包收起来；发现 IP 地址符合，根据 IP 头中协议项，知道自己上一层是 TCP 协议，于是解析 TCP 的头，里面有序列号，需要看一看这个序列包是不是我要的，如果是就放入缓存中然后返回一个 ACK，如果不是就丢弃。</p>
+<p>TCP 头里面还有端口号，HTTP 的服务器正在监听这个端口号。于是，目标机器自然知道是 HTTP 服务器这个进程想要这个包，于是将包发给 HTTP 服务器。HTTP 服务器的进程看到，原来这个请求是要访问一个网页，于是就把这个网页发给客户端。</p>
+<h3 id="报文格式"><a href="#报文格式" class="headerlink" title="报文格式"></a>报文格式</h3><h4 id="请求报文"><a href="#请求报文" class="headerlink" title="请求报文"></a>请求报文</h4><img src="https://img-blog.csdnimg.cn/20210326153914213.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+
+
+<p><strong>1、请求行</strong></p>
+<p>由三部分构成：<strong>方法、请求资源的URL、HTTP的版本。</strong></p>
+<p>HTTP请求的方法主要有：<strong>GET、POST、PUT、DELETE、OPTIONS、HEAD、TRANCE、CONNECT</strong>等</p>
+<ol>
+<li>**GET:**想特定的资源发出请求。</li>
+<li>**POST:**向指定的资源提交相应的数据金星焕处理请求，比如说提交表单、上传文件。数据被包含在请求实体中。</li>
+<li>**PUT:**从客户端向服务器传送的数据取代指定的文档的内容。</li>
+<li>**DELETE:**请求服务器删除指定的页面</li>
+<li>**OPTIONS:**允许客户端查看服务器的性能。</li>
+<li><strong>HEAD：</strong>类似于get请求，只不过返回的响应中没有具体的内容，用于获取报头</li>
+<li><strong>TRANS：</strong>回显服务器收到的请求，主要用于测试或诊断。</li>
+<li>**CONNECT:**HTTP&#x2F;1.1协议中预留给能够将连接改为管道方式的代理服务器。</li>
+</ol>
+<p><strong>2、请求头部</strong></p>
+<p>是一个个的key-value值</p>
+<p><strong>3、请求数据</strong></p>
+<p>GET方法没有携带数据， POST方法会携带一个body</p>
+<hr/>
+
+<h4 id="响应报文"><a href="#响应报文" class="headerlink" title="响应报文"></a>响应报文</h4><img src="https://img-blog.csdnimg.cn/20210326154942465.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p><strong>1、请求行</strong></p>
+<p>版本+空格+状态码+空格+短语+回车换行</p>
+<p><strong>2、请求头</strong></p>
+<p>是一个个的key-value值</p>
+<p><strong>3、请求数据</strong></p>
+<p>响应的data，本例中是一段HTML</p>
+<hr/>
+
+<h4 id="GET请求和POST请求"><a href="#GET请求和POST请求" class="headerlink" title="GET请求和POST请求"></a>GET请求和POST请求</h4><blockquote>
+<p><strong>最直观的就是语义上的区别</strong></p>
+</blockquote>
+<p>1、get用来获取数据，post用来提交数据</p>
+<p>2、get参数有长度限制（<strong>受限于url长度，具体的数值取决于浏览器和服务器的限制，最长2048字节</strong>），而post无限制。</p>
+<p>3、<strong>get请求的数据会附加在url之后</strong> ，以 “ ？ “分割url和传输数据，多个参数用 “&amp;”连接，而p<strong>ost请求会把请求的数据放在http请求体中。</strong></p>
+<p>4、get是明文传输，post是放在请求体中，但是开发者可以通过抓包工具看到，也相当于是明文的。</p>
+<p>5、get请求会保存在浏览器历史记录中，还可能保存在web服务器的日志中</p>
+<hr/>
+
+
+
+<ol>
+<li><p>get是获取数据，post是修改数据</p>
+</li>
+<li><p>get把请求的数据放在url上， 以?分割URL和传输数据，参数之间以&amp;相连，所以get不太安全。而post把数据放在HTTP的包体内（requrest body）</p>
+</li>
+<li><p>get提交的数据最大是2k（ 限制实际上取决于浏览器）， post理论上没有限制。</p>
+</li>
+<li><p>GET产生一个TCP数据包，浏览器会把http header和data一并发送出去，服务器响应200(返回数据); POST产生两个TCP数据包，浏览器先发送header，服务器响应100 continue，浏览器再发送data，服务器响应200 ok(返回数据)。</p>
+</li>
+<li><p>GET请求会被浏览器主动缓存，而POST不会，除非手动设置。</p>
+</li>
+<li><p>本质区别：GET是幂等的，而POST不是幂等的</p>
+<blockquote>
+<p>这里的幂等性：幂等性是指一次和多次请求某一个资源应该具有同样的副作用。简单来说意味着对同一URL的多个请求应该返回同样的结果。</p>
+</blockquote>
+</li>
+</ol>
+<p>正因为它们有这样的区别，所以不应该且<strong>不能用get请求做数据的增删改这些有副作用的操作</strong>。因为get请求是幂等的，<strong>在网络不好的隧道中会尝试重试</strong>。如果用get请求增数据，会有<strong>重复操作</strong>的风险，而这种重复操作可能会导致副作用（浏览器和操作系统并不知道你会用get请求去做增操作）。</p>
+<hr/>
+
+<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><p>1、固定3个数字</p>
+<p>2、用来表示当前HTTP请求是否已经成功完成</p>
+<p><strong>3、分类：</strong></p>
+<ul>
+<li>100—199：信息响应</li>
+<li>200—299：成功响应</li>
+<li>300—399：重定向</li>
+<li>400—499：客户端错误</li>
+<li>500—599：服务器错误</li>
+</ul>
+<hr/>
+
+<p><strong>1开头</strong></p>
+<ul>
+<li><p><strong>100：Continue</strong></p>
+<ul>
+<li><p>请求的初始部分已经被服务器收到，并且没有被服务器拒绝；客户端应该继续发送剩余请求，如果请求已经完成就忽略这个响应</p>
+</li>
+<li><p>允许客户端发送带请求体的请求前，判断服务器是否愿意接收请求（服务器通过请求头判断）</p>
+</li>
+<li><p>在某些情况下，如果服务器在不看请求体就拒绝连接，客户端就发送请求体是不恰当的</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr/>
+
+<p><strong>2开头</strong></p>
+<ul>
+<li><strong>200：OK</strong><ul>
+<li>请求成功</li>
+</ul>
+</li>
+</ul>
+<hr/>
+
+<p><strong>3开头</strong></p>
+<ul>
+<li><p><strong>301 永久重定向</strong></p>
+<ul>
+<li>旧地址A的资源已经被永久地移除了（这个资源不可访问了），<strong>搜索引擎在抓取新内容的同时也将旧的网址交换为重定向之后的网址</strong>；</li>
+</ul>
+</li>
+<li><p><strong>302 临时重定向</strong></p>
+<ul>
+<li>请求的资源被暂时移动到了由Location指定的URL上</li>
+<li>旧地址A的资源还在（仍然可以访问），这个重定向只是临时地从旧地址A跳转到地址B，<strong>搜索引擎会抓取新的内容而保存旧的网址。</strong></li>
+</ul>
+</li>
+</ul>
+<p>响应302，Location</p>
+<p>请求Location</p>
+<p>响应HTML</p>
+<img src="https://img-blog.csdnimg.cn/20210326164102823.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom: 33%;" />
+
+<blockquote>
+<p>301和302的区别？</p>
+</blockquote>
+<p>301:</p>
+<img src="https://img-blog.csdnimg.cn/20210326165612618.png" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p>302:</p>
+<img src="https://img-blog.csdnimg.cn/20210326165628726.png" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<ul>
+<li><strong>304 Not Modified</strong><ul>
+<li>说明无需再次传输</li>
+<li><strong>缓存里面有</strong></li>
+</ul>
+</li>
+</ul>
+<hr/>
+
+<p><strong>4开头</strong></p>
+<ul>
+<li><strong>400 Bad Request</strong><ul>
+<li>由于语法无效，服务器无法理解该请求<ul>
+<li>没有传该传的数据（比如需要name和age，只有name）</li>
+<li>请求报文的格式不正确</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>401</strong> <ul>
+<li>缺乏目标资源要求的身份验证凭证</li>
+</ul>
+</li>
+<li><strong>403 Forbidden</strong><ul>
+<li>服务器端有能力处理这个请求，但是拒绝授权访问</li>
+</ul>
+</li>
+<li><strong>404 Not Found</strong><ul>
+<li>服务器端无法找到所请求的资源</li>
+</ul>
+</li>
+<li><strong>405</strong> <ul>
+<li>服务器禁止了使用当前HTTP请求方法（get、post等）</li>
+</ul>
+</li>
+<li><strong>406</strong><ul>
+<li>服务器端无法提供与能接受指定的值所匹配的响应</li>
+</ul>
+</li>
+<li><strong>408 Request TimeOut</strong><ul>
+<li>服务器想要将没有在使用的连接关闭</li>
+</ul>
+</li>
+</ul>
+<hr/>
+
+<p><strong>5开头</strong></p>
+<ul>
+<li><strong>500</strong><ul>
+<li>服务器出现意外问题（比如后台出现1&#x2F;0）</li>
+</ul>
+</li>
+<li><strong>501</strong><ul>
+<li>请求的方法不被服务器支持</li>
+<li>服务器必须支持：GET和HEAD</li>
+</ul>
+</li>
+<li><strong>502 Bad Gateway</strong><ul>
+<li>作为网关或代理角色的服务器从上游服务器接收的响应是无效的</li>
+</ul>
+</li>
+<li><strong>503</strong><ul>
+<li>服务器停机维护、已超载</li>
+</ul>
+</li>
+</ul>
+<h3 id="HTTP2-0"><a href="#HTTP2-0" class="headerlink" title="HTTP2.0"></a>HTTP2.0</h3><p>HTTP 1.1 在应用层以纯文本的形式进行通信。每次通信都要带完整的 HTTP 的头，而且不考虑 pipeline 模式的话，每次的过程总是像上面描述的那样一去一回。这样在实时性、并发性上都存在问题。</p>
+<p>为了解决这些问题，HTTP 2.0 会对 HTTP 的头进行一定的压缩，将原来每次都要携带的大量 key value 在两端建立一个索引表，对相同的头只发送索引表中的索引。</p>
+<p>另外，HTTP 2.0 协议将一个 TCP 的连接中，切分成多个流，每个流都有自己的 ID，而且流可以是客户端发往服务端，也可以是服务端发往客户端。它其实只是一个虚拟的通道。流是有优先级的。</p>
+<p>HTTP 2.0 还将所有的传输信息分割为更小的消息和帧，并对它们采用二进制格式编码。常见的帧有 Header 帧，用于传输 Header 内容，并且会开启一个新的流。再就是 Data 帧，用来传输正文实体。多个 Data 帧属于同一个流。</p>
+<p>通过这两种机制，HTTP 2.0 的客户端可以将多个请求分到不同的流中，然后将请求内容拆成帧，进行二进制传输。这些帧可以打散乱序发送， 然后根据每个帧首部的流标识符重新组装，并且可以根据优先级，决定优先处理哪个流的数据。</p>
+<p>我们来举一个例子。</p>
+<p>假设我们的一个页面要发送三个独立的请求，一个获取 css，一个获取 js，一个获取图片 jpg。如果使用 HTTP 1.1 就是串行的，但是如果使用 HTTP 2.0，就可以在一个连接里，客户端和服务端都可以同时发送多个请求或回应，而且不用按照顺序一对一对应。</p>
+<p>HTTP 2.0 其实是将三个请求变成三个流，将数据分成帧，乱序发送到一个 TCP 连接中。</p>
+<p>HTTP 2.0 成功解决了 HTTP 1.1 的队首阻塞问题，同时，也不需要通过 HTTP 1.x 的 pipeline 机制用多条 TCP 连接来实现并行请求与响应；减少了 TCP 连接数对服务器性能的影响，同时将页面的多个数据 css、js、 jpg 等通过一个数据链接进行传输，能够加快页面组件的传输速度。</p>
+<h3 id="Cookie和Session"><a href="#Cookie和Session" class="headerlink" title="Cookie和Session"></a>Cookie和Session</h3><p><strong>请求头：</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/20210326181328866.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" /><img src="https://img-blog.csdnimg.cn/20210326181344294.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><strong>响应头：</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210326181344294.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<hr/>
+
+<p><strong>1、Cookie</strong></p>
+<ul>
+<li>在客户端存储一些数据，存储到本地磁盘</li>
+<li>服务器可以返回cookie交给客户端去存储</li>
+</ul>
+<p><strong>2、Session</strong></p>
+<ul>
+<li>在服务器存储一些数据，存储到内存中</li>
+<li>Session 代表着服务器和客户端一次会话的过程。</li>
+<li>Session 对象存储特定用户会话所需的属性及配置信息。这样，当用户在应用程序的 Web 页之间跳转时，存储在 Session 对象中的变量将不会丢失，而是在整个用户会话中一直存在下去。当客户端关闭会话，或者 Session 超时失效时会话结束。</li>
+</ul>
+<p><strong>过程：</strong></p>
+<ul>
+<li><p>登录成功后，服务器为浏览器创建一个session对象（在服务器内存）</p>
+</li>
+<li><p>登录成功，返回响应头：set-cookie：JSESSIONID&#x3D;666，服务器希望客户端存储cookie</p>
+</li>
+<li><p>domain、path存储一个地址，访问这个地址的时候就会带上对应的cookie</p>
+</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/20210326201233747.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>浏览器就获得了cookie</li>
+<li>浏览器发出请求头：cookie：JSESSIONID&#x3D;666</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/20210326201348819.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>服务器发现请求中有cookie，JSESSIONID相同，说明这个浏览器成功登陆过，就会返回user的json数据</li>
+</ul>
+<hr/>
+
+<blockquote>
+<p><strong>什么是 Cookie？</strong></p>
+</blockquote>
+<p>HTTP Cookie（也叫 Web Cookie或浏览器 Cookie）是服务器发送到用户浏览器并保存在本地的一小块数据，它会在浏览器下次向同一服务器再发起请求时被携带并发送到服务器上。</p>
+<p>通常，它用于告知服务端两个请求是否来自同一浏览器，如保持用户的登录状态。Cookie 使基于无状态的 HTTP 协议记录稳定的状态信息成为了可能。</p>
+<p>Cookie 主要用于以下三个方面：</p>
+<ul>
+<li>会话状态管理（如用户登录状态、购物车、游戏分数或其它需要记录的信息）</li>
+<li>个性化设置（如用户自定义设置、主题等）</li>
+<li>浏览器行为跟踪（如跟踪分析用户行为等）</li>
+</ul>
+<hr/>
+
+<blockquote>
+<p><strong>什么是 Session？</strong></p>
+</blockquote>
+<p>Session 代表着服务器和客户端一次会话的过程。Session 对象存储特定用户会话所需的属性及配置信息。这样，当用户在应用程序的 Web 页之间跳转时，存储在 Session 对象中的变量将不会丢失，而是在整个用户会话中一直存在下去。当客户端关闭会话，或者 Session 超时失效时会话结束。</p>
+<hr/>
+
+<blockquote>
+<p><strong>Cookie 和 Session 有什么不同？</strong></p>
+</blockquote>
+<p><strong>1、作用范围不同</strong></p>
+<ul>
+<li>Cookie 保存在客户端（浏览器）</li>
+<li>Session 保存在服务器端。</li>
+</ul>
+<p><strong>2、存取方式的不同</strong></p>
+<ul>
+<li>Cookie 只能保存 ASCII</li>
+<li>Session 可以存任意数据类型，一般情况下我们可以在 Session 中保持一些常用变量信息，比如说 UserId 等。</li>
+</ul>
+<p><strong>3、有效期不同</strong></p>
+<ul>
+<li>Cookie 可设置为长时间保持，比如我们经常使用的默认登录功能</li>
+<li>Session 一般失效时间较短，客户端关闭或者 Session 超时都会失效。</li>
+</ul>
+<p><strong>4、隐私策略不同</strong></p>
+<ul>
+<li>Cookie 存储在客户端，比较容易遭到不法获取，早期有人将用户的登录名和密码存储在 Cookie 中导致信息被窃取；</li>
+<li>Session 存储在服务端，安全性相对 Cookie 要好一些。</li>
+</ul>
+<p><strong>5、存储大小不同</strong></p>
+<ul>
+<li>单个 Cookie 保存的数据不能超过 4K</li>
+<li>Session 可存储数据远高于 Cookie。</li>
+</ul>
+<hr/>
+
+<blockquote>
+<p><strong>为什么需要 Cookie 和 Session，他们有什么关联？</strong></p>
+</blockquote>
+<p>说起来为什么需要 Cookie ，这就需要从浏览器开始说起，我们都知道浏览器是没有状态的(HTTP 协议无状态)，这意味着浏览器并不知道是张三还是李四在和服务端打交道。这个时候就需要有一个机制来告诉服务端，本次操作用户是否登录，是哪个用户在执行的操作，那这套机制的实现就需要 Cookie 和 Session 的配合。<br>那么 Cookie 和 Session 是如何配合的呢？</p>
+<p><img src="https://pic4.zhimg.com/80/v2-a0fca9a4e7b2197de6ade0c62e2a6ba7_1440w.jpg" alt="img"></p>
+<p>1、用户第一次请求服务器的时候，服务器根据用户提交的相关信息，创建创建对应的 Session ，请求返回时将此 Session 的唯一标识信息 SessionID 返回给浏览器，浏览器接收到服务器返回的 SessionID 信息后，会将此信息存入到 Cookie 中，同时 Cookie 记录此 SessionID 属于哪个域名。</p>
+<p>2、当用户第二次访问服务器的时候，请求会自动判断此域名下是否存在 Cookie 信息，如果存在自动将 Cookie 信息也发送给服务端，服务端会从 Cookie 中获取 SessionID，再根据 SessionID 查找对应的 Session 信息，如果没有找到说明用户没有登录或者登录失效，如果找到 Session 证明用户已经登录可执行后面操作。</p>
+<p>根据以上流程可知，SessionID 是连接 Cookie 和 Session 的一道桥梁，大部分系统也是根据此原理来验证用户登录状态。</p>
+<hr/>
+
+<blockquote>
+<p><strong>禁用Cookie后，怎么办</strong></p>
+</blockquote>
+<p>既然服务端是根据 Cookie 中的信息判断用户是否登录，那么如果浏览器中禁止了 Cookie，如何保障整个机制的正常运转。</p>
+<p>第一种方案，每次请求中都携带一个 SessionID 的参数，也可以 Post 的方式提交，也可以在请求的地址后面拼接 xxx?SessionID&#x3D;123456…。</p>
+<p>第二种方案，Token 机制。Token 机制多用于 App 客户端和服务器交互的模式，也可以用于 Web 端做用户状态管理。</p>
+<p>Token 的意思是“令牌”，是服务端生成的一串字符串，作为客户端进行请求的一个标识。Token 机制和 Cookie 和 Session 的使用机制比较类似。</p>
+<p>当用户第一次登录后，服务器根据提交的用户信息生成一个 Token，响应时将 Token 返回给客户端，以后客户端只需带上这个 Token 前来请求数据即可，无需再次登录验证。</p>
+<h3 id="代理"><a href="#代理" class="headerlink" title="代理"></a>代理</h3><h4 id="代理服务器"><a href="#代理服务器" class="headerlink" title="代理服务器"></a>代理服务器</h4><p>特点：</p>
+<ul>
+<li><p>本身不生产内容</p>
+</li>
+<li><p>处于中间位置转发上下游的请求和响应</p>
+<ul>
+<li>面向下游的客户端：它是服务器</li>
+<li>面向上游的服务器：它是客户端</li>
+</ul>
+</li>
+</ul>
+<h4 id="正向代理、反向代理"><a href="#正向代理、反向代理" class="headerlink" title="正向代理、反向代理"></a>正向代理、反向代理</h4><p>正向代理：代理的对象是客户端</p>
+<p>反向代理：代理的对象是服务器</p>
+<img src="https://img-blog.csdnimg.cn/20210326202714905.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p><strong>正向代理</strong></p>
+<p>作用：</p>
+<ul>
+<li>隐藏客户端身份</li>
+<li>绕过防火墙（突破访问限制）</li>
+<li>Internet访问控制</li>
+</ul>
+<hr/>
+
+<p><strong>反向代理</strong></p>
+<ul>
+<li>隐藏服务器身份</li>
+<li>安全防护</li>
+<li>负载均衡</li>
+</ul>
+<h4 id="相关的头部字段"><a href="#相关的头部字段" class="headerlink" title="相关的头部字段"></a>相关的头部字段</h4><p><strong>1、via</strong></p>
+<p>追加经过的每一台代理服务器的主机名</p>
+<p><strong>2、x-Forwarded-For</strong></p>
+<p>追加请求方的IP地址</p>
+<p><strong>3、x-Real-IP</strong></p>
+<p>客户端的真实IP地址</p>
+<h3 id="CDN"><a href="#CDN" class="headerlink" title="CDN"></a>CDN</h3><p>内容分发网络</p>
+<p><strong>利用最靠近每一位用户的服务器，更快更可靠的把音乐、视频、图片等资源文件传递给用户</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210326205948174.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<img src="https://img-blog.csdnimg.cn/20210326210507170.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<h3 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h3><p><strong>Memory Cache 、Disk Cache</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/20210327142741546.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><strong>通常会缓存的情况：GET请求+静态资源（HTML、CSS等）</strong></p>
+<h4 id="响应头"><a href="#响应头" class="headerlink" title="响应头"></a>响应头</h4><p>1、Pragma：作用类似于Cache-Control，HTTP&#x2F;1.0的产物</p>
+<p>2、Expires：缓存的过期时间，HTTP&#x2F;1.0的产物</p>
+<p><strong>3、Cache-Control：设置缓存策略</strong></p>
+<ul>
+<li><strong>no-storage</strong>：不允许缓存</li>
+<li>public：允许用户、代理服务器缓存数据到本地</li>
+<li>private：只允许用户缓存数据到本地</li>
+<li><strong>max-age</strong>：缓存的有效时间（多长时间不过期），单位秒</li>
+<li><strong>no-Cache</strong>：允许缓存，每次需要发请求询问是否是最新版本，再决定如何使用缓存</li>
+</ul>
+<blockquote>
+<p> 优先级：Pragme &gt; Cache-Control &gt; Expires</p>
+</blockquote>
+<p><strong>4、last-Modified：</strong>资源的最后一次修改时间</p>
+<p><strong>5、ETag：</strong>资源唯一标识，是一个摘要值</p>
+<blockquote>
+<p>优先级：ETag &gt; last-Modified</p>
+</blockquote>
+<h4 id="请求头"><a href="#请求头" class="headerlink" title="请求头"></a>请求头</h4><p><strong>1、If-None-Match</strong>：如果上一次的响应头中有ETag，就会将ETag的值最为请求头的值</p>
+<ul>
+<li>如果服务器发现资源的最新摘要值和If-None-Match不匹配就会返回新的资源（200）</li>
+<li>否则，不会返回资源的具体数据（304）</li>
+</ul>
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy81MjQyMTI1LTYzYWU2YzM4MjNjYzUzOGUucG5n?x-oss-process=image/format,png" alt="Etag" style="zoom:50%;" />
+
+<p><strong>2、If-Modified-since</strong>：与last-Modified配合使用</p>
+<ul>
+<li>如果上一次的响应头中没有ETag，有last-Modified，就会把这个作为请求头的值</li>
+<li>如果服务器发现最后一次修改时间晚（200）</li>
+<li>否则（304）</li>
+</ul>
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy81MjQyMTI1LWNlNWZjYjg0YTQ3ZGUyODUucG5n?x-oss-process=image/format,png" alt="Last-Modified" style="zoom:53%;" />
+
+<blockquote>
+<p>为什么需要两个？</p>
+</blockquote>
+<p>last-Modified的缺陷：</p>
+<ul>
+<li>只能精确到秒级别</li>
+<li>如果某些文件修改时间发生变化，但是内容没有变化</li>
+</ul>
+<h4 id="缓存的使用流程"><a href="#缓存的使用流程" class="headerlink" title="缓存的使用流程"></a>缓存的使用流程</h4><p>强制缓存：cache-control</p>
+<p>对比缓存：no-cache</p>
+<img src="https://img-blog.csdnimg.cn/20210327145548961.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:60%;" />
+
+<p>过程：</p>
+<p>1、第一次</p>
+<ul>
+<li>请求服务器</li>
+<li>如果服务器响应的cache-control不是no-storage就将<strong>数据和缓存标识</strong>缓存到本地，否则不缓存</li>
+</ul>
+<p>2、后续</p>
+<ul>
+<li>本地有缓存，查看响应头的cache-control是不是no-cache</li>
+<li>如果不是no-cache，就不需要进行对比缓存，判断缓存是否过期</li>
+<li>如果缓存没有过期就可以直接使用本地缓存</li>
+<li>如果缓存过期了或者响应头不是no-cache，就查看响应头是否有ETag，如果有就向服务器发起请求，请求头为if-none-match，如果服务器发现不匹配就返回200，匹配就返回304</li>
+<li>如果响应头没有ETag，查看是否有last-modified，如果有就向服务器发起请求，请求头包括if-modified-since，如果服务器发现不匹配就200，匹配就返回3 04</li>
+</ul>
+<h3 id="面试题"><a href="#面试题" class="headerlink" title="面试题"></a>面试题</h3><h4 id="说一下一次完整的HTTP请求过程包括哪些内容？"><a href="#说一下一次完整的HTTP请求过程包括哪些内容？" class="headerlink" title="说一下一次完整的HTTP请求过程包括哪些内容？"></a>说一下一次完整的HTTP请求过程包括哪些内容？</h4><h5 id="第一种回答"><a href="#第一种回答" class="headerlink" title="第一种回答"></a>第一种回答</h5><ul>
+<li>建立起客户机和服务器连接。 </li>
+<li>建立连接后，客户机发送一个请求给服务器。 </li>
+<li>服务器收到请求给予响应信息。 </li>
+<li>客户端浏览器将返回的内容解析并呈现，断开连接。</li>
+</ul>
+<h5 id="第二种回答"><a href="#第二种回答" class="headerlink" title="第二种回答"></a>第二种回答</h5><p>域名解析 –&gt; 发起TCP的3次握手 –&gt; 建立TCP连接后发起http请求 –&gt; 服务器响应http请求，浏览器得到html代码 –&gt; 浏览器解析html代码，并请求html代码中的资源（如js、css、图片等） –&gt; 浏览器对页面进行渲染呈现给用户。</p>
+<h1 id="应用层（三）"><a href="#应用层（三）" class="headerlink" title="应用层（三）"></a>应用层（三）</h1><h2 id="安全威胁"><a href="#安全威胁" class="headerlink" title="安全威胁"></a>安全威胁</h2><h3 id="网络层—ARP欺骗"><a href="#网络层—ARP欺骗" class="headerlink" title="网络层—ARP欺骗"></a>网络层—ARP欺骗</h3><p>1、ARP欺骗，又称ARP毒化、ARP攻击</p>
+<p>2、ARP欺骗可以造成的效果</p>
+<ul>
+<li>让攻击者获取局域网上的数据包甚至篡改数据包</li>
+<li>让网络上特定电脑之间无法通信</li>
+<li>让送至特点IP地址的流量被错误发送到攻击者所取代的地方</li>
+</ul>
+<p><strong>3、核心步骤</strong></p>
+<img src="https://img-blog.csdnimg.cn/202103262121372.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<h3 id="DoS、DDoS"><a href="#DoS、DDoS" class="headerlink" title="DoS、DDoS"></a>DoS、DDoS</h3><p>1、<strong>DoS攻击：拒绝服务攻击</strong></p>
+<ul>
+<li>使目标电脑的网络或系统资源耗尽，使服务暂时中断或停止，导致其他正常用户无法访问</li>
+<li><strong>分为两大类</strong><ul>
+<li>带宽消耗型：UDP洪水攻击、ICMP洪水攻击</li>
+<li>资源消耗型：SYN洪水攻击、LAND洪水攻击</li>
+</ul>
+</li>
+</ul>
+<p>2、<strong>DDoS攻击：分布式拒绝服务攻击</strong></p>
+<ul>
+<li>黑客使用网络上两个或者以上被攻陷的电脑作为僵尸，向特定目标发动DoS攻击</li>
+<li>2018年3月GitHub受到了最大的DDoS攻击</li>
+</ul>
+<p>3、<strong>Dos攻击分为两大类</strong></p>
+<ul>
+<li><strong>带宽消耗型：</strong>UDP洪水攻击（不断扔UDP数据包）、ICMP洪水攻击</li>
+<li><strong>资源消耗型：</strong>SYN洪水攻击、LAND攻击</li>
+</ul>
+<h4 id="SYN洪水攻击"><a href="#SYN洪水攻击" class="headerlink" title="SYN洪水攻击"></a>SYN洪水攻击</h4><p>攻击者发送一系列的SYN请求到目标，然后让目标因为收不到ACK（第三次握手）而等待、消耗资源</p>
+<p><strong>攻击方法</strong></p>
+<ul>
+<li>跳过发送最后的ACK信息</li>
+<li>修改源IP地址，让目标发送SYN-ACK到伪造的IP地址，因此目标永远不可能收到ACK（第三次握手）</li>
+</ul>
+<h4 id="LAND攻击"><a href="#LAND攻击" class="headerlink" title="LAND攻击"></a>LAND攻击</h4><p>局域网拒绝服务攻击</p>
+<p><strong>通过持续发送相同源地址和目标地址的欺骗数据包，使目标试图和自己建立连接，消耗系统资源至崩溃</strong></p>
+<h4 id="防御方式"><a href="#防御方式" class="headerlink" title="防御方式"></a>防御方式</h4><p>入侵检测、流量过滤、多重验证</p>
+<ul>
+<li>堵塞网络带宽的流量将被过滤，正常流量可以通过</li>
+</ul>
+<p>防火墙</p>
+<ul>
+<li>设置规则，允许或者拒绝特定的通讯协议</li>
+</ul>
+<p>黑洞引导</p>
+<ul>
+<li>将所有受攻击计算机的通信全部发送到一个黑洞（空接口或者不存在的计算机地址）</li>
+</ul>
+<h3 id="应用层—DNS劫持"><a href="#应用层—DNS劫持" class="headerlink" title="应用层—DNS劫持"></a>应用层—DNS劫持</h3><p>攻击者篡改某个域名的解析结果，使得指向该域名的IP变成了另外一个IP</p>
+<p>导致对相应网址的访问被劫持到另外一个不可达或者假冒的网址</p>
+<p>从而实现非法窃取用户信息或者破坏正常网络服务的目的</p>
+<img src="https://img-blog.csdnimg.cn/20210327095253569.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+
+
+<h3 id="HTTP协议的安全问题"><a href="#HTTP协议的安全问题" class="headerlink" title="HTTP协议的安全问题"></a>HTTP协议的安全问题</h3><p>1、默认采用<strong>明文传输</strong>，因此会有很大的安全隐患</p>
+<ul>
+<li>常见的提高安全性的方法：对通信内容进行加密后再进行传输</li>
+</ul>
+<p>2、<strong>常见加密</strong></p>
+<ul>
+<li>不可逆<ul>
+<li>单向散列函数：MD5、SHA</li>
+</ul>
+</li>
+<li>可逆<ul>
+<li>对称加密</li>
+<li>非对称加密</li>
+</ul>
+</li>
+<li>其他<ul>
+<li>混合密码系统</li>
+<li>数字签名</li>
+<li>证书</li>
+</ul>
+</li>
+</ul>
+<h2 id="单向散列函数"><a href="#单向散列函数" class="headerlink" title="单向散列函数"></a>单向散列函数</h2><p>根据消息内容计算出散列值</p>
+<p>散列值的长度和消息的长度无关，无论消息多大都会计算出固定长度的散列值</p>
+<p><strong>特点：根据任意长度的消息计算出固定长度的散列值</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210327092529941.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p>1、单向散列函数也被称为<strong>消息摘要函数、哈希函数</strong></p>
+<p>输出的散列值也被称为<strong>消息摘要、指纹</strong></p>
+<p>2、常见的几种单向散列函数</p>
+<ul>
+<li><p>MD4、MD5</p>
+<ul>
+<li>产生128bit的散列值，现在已经不安全</li>
+</ul>
+</li>
+<li><p>SHA-1</p>
+<ul>
+<li>产生160bit散列值，现在已经不安全</li>
+</ul>
+</li>
+<li><p>SHA-2</p>
+<ul>
+<li>SHA-256、SHA-384、SHA-512</li>
+</ul>
+</li>
+<li><p>SHA-3</p>
+</li>
+</ul>
+<p><strong>3、应用：防止数据被篡改</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210327093353312.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p><strong>4、应用：密码加密</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210327093559218.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<h2 id="对称加密（对称密码）"><a href="#对称加密（对称密码）" class="headerlink" title="对称加密（对称密码）"></a>对称加密（对称密码）</h2><p><strong>对称密码中，加密用的密钥和解密用的密钥相同</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210327095940974.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p>常见的对称加密算法：</p>
+<ul>
+<li>DES</li>
+<li>3DES</li>
+<li>AES</li>
+</ul>
+<h3 id="DES"><a href="#DES" class="headerlink" title="DES"></a>DES</h3><p><img src="https://img-blog.csdnimg.cn/20210327100455939.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>1、DES是一种<strong>将64bit明文加密成64bit密文的对称加密算法，密钥长度56bit</strong></p>
+<p>2、密钥长度64bit，但是每隔7bit会设置一个用于错误检查的bit，因此密钥长度实质上56bit</p>
+<p><strong>3、由于DES每次只能加密64bit数据，所以加密长数据需要反复加密</strong></p>
+<h3 id="3DES"><a href="#3DES" class="headerlink" title="3DES"></a>3DES</h3><p>将DES重复3次所得到的一种密码算法</p>
+<ul>
+<li>三重DES并不少进行三次DES加密，而是<strong>加密、解密、加密的过程</strong></li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/20210327100750176.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p>3个密钥都是不同的，也被称为DES-EDE3</p>
+<h3 id="AES"><a href="#AES" class="headerlink" title="AES"></a>AES</h3><p><strong>取代DES成为新标准的一种对称加密算法</strong></p>
+<p>AES密钥长度有128、192、256bit三种</p>
+<h2 id="非对称加密（公钥密码）"><a href="#非对称加密（公钥密码）" class="headerlink" title="非对称加密（公钥密码）"></a>非对称加密（公钥密码）</h2><p><strong>公钥密码中，加密用的密钥和解密用的密钥不同</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210327102342308.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p>1、<strong>加密密钥</strong>：一般是公开的，因此该密钥称为<strong>公钥</strong></p>
+<ul>
+<li>因此，非对称加密也被称为<strong>公钥密码</strong></li>
+</ul>
+<p><strong>解密密钥</strong>：不能公开，由消息接受者保管，不能公开，因此称为<strong>私钥</strong></p>
+<p>2、<strong>用对方的公钥进行加密，对方用自己的私钥解密</strong></p>
+<p>3、公钥和私钥是一一对应的，不能单独生成</p>
+<ul>
+<li>一对公钥和私钥称为<strong>密钥对</strong></li>
+</ul>
+<p>4、由公钥加密的密文，必须使用对应的私钥才能解密</p>
+<p>5、由私钥加密的密文，必须使用与该私钥对应的公钥才能加密（<strong>也可以使用私钥加密</strong>）</p>
+<h3 id="解决密钥配送问题"><a href="#解决密钥配送问题" class="headerlink" title="解决密钥配送问题"></a>解决密钥配送问题</h3><p>1、由消息的接受者，生成一对公钥、私钥</p>
+<p>2、将公钥发给消息的发送者</p>
+<p>3、消息的发送者使用公钥加密消息</p>
+<h3 id="RSA"><a href="#RSA" class="headerlink" title="RSA"></a>RSA</h3><p>对广泛使用的非对称加密算法</p>
+<h2 id="混合密码系统"><a href="#混合密码系统" class="headerlink" title="混合密码系统"></a>混合密码系统</h2><p>非对称加密：复杂、安全、加密解密速度慢</p>
+<p>对称加密：简单、不安全、加密解密速度快</p>
+<h3 id="加密"><a href="#加密" class="headerlink" title="加密"></a>加密</h3><p><strong>1、会话密钥</strong></p>
+<ul>
+<li>本次通信随机生成的临时密钥</li>
+<li>作为对称加密的密钥，用于加密消息，提高速度</li>
+</ul>
+<p>2、加密步骤</p>
+<img src="https://img-blog.csdnimg.cn/20210327105238231.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<ul>
+<li>生成一个<strong>随机的会话密钥</strong></li>
+<li>用这个会话密钥<strong>对消息进行对称加密</strong></li>
+<li>使用接受者的公钥<strong>对会话密钥进行非对称加密</strong></li>
+<li>将非对称加密的会话密钥和对称加密的消息组合发给接受者</li>
+</ul>
+<p>发出去的内容：</p>
+<ul>
+<li>非对称加密的会话密钥</li>
+<li>对称加密的消息</li>
+</ul>
+<h3 id="解密"><a href="#解密" class="headerlink" title="解密"></a>解密</h3><img src="https://img-blog.csdnimg.cn/20210327105533375.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom: 50%;" />
+
+<p>过程：</p>
+<ul>
+<li>使用私钥解密会话密钥</li>
+<li>使用解密后的会话密钥解密消息</li>
+</ul>
+<h2 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h2><blockquote>
+<p> 问题：发送方发送的消息可能是被篡改的，或者是它发的但是它可以否认</p>
+</blockquote>
+<p>数字签名不是用来加密的，是用来保证数据可靠性的</p>
+<p>1、在数字签名技术中，有2种行为：</p>
+<ul>
+<li><strong>生成签名</strong><ul>
+<li>由消息的发送者完成，通过“<strong>签名密钥</strong>”生成</li>
+</ul>
+</li>
+<li><strong>验证签名</strong><ul>
+<li>由消息的接收者完成，通过“<strong>验证密钥”</strong>生成</li>
+</ul>
+</li>
+</ul>
+<p>2、如何保证签名是消息发送者自己签的？</p>
+<ul>
+<li>用消息发送者的私钥进行签名</li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/20210327110613853.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p>过程：</p>
+<ul>
+<li>发送方发送<strong>消息的明文</strong></li>
+<li>发送方使用私钥<strong>加密消息生成签名</strong></li>
+<li>接收方使用<strong>公钥解密签名获得消息</strong></li>
+<li>将这个消息和明文消息进行比较</li>
+</ul>
+<h3 id="过程改进"><a href="#过程改进" class="headerlink" title="过程改进"></a>过程改进</h3><p>结合<strong>单向散列函数</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210327130326903.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p>过程：</p>
+<ul>
+<li>使用单向散列函数<strong>将明文消息转为散列值</strong></li>
+<li>使用私钥<strong>加密散列值生成签名</strong></li>
+<li>发送签名和消息明文</li>
+<li>接收方使用单向散列函数<strong>将消息转为散列值</strong></li>
+<li>接收方使用<strong>公钥解密签名生成散列值</strong></li>
+<li>比对散列值</li>
+</ul>
+<h3 id="疑惑"><a href="#疑惑" class="headerlink" title="疑惑"></a>疑惑</h3><blockquote>
+<p> 数字签名不能保证机密性？</p>
+</blockquote>
+<p>数字签名的作用不是为了保证机密性，是为了识别内容没有被篡改</p>
+<blockquote>
+<p>数字签名的作用？</p>
+</blockquote>
+<ul>
+<li>确认消息的完整性</li>
+<li>识别消息是否被篡改</li>
+<li>防止消息发送人否认</li>
+</ul>
+<h2 id="证书"><a href="#证书" class="headerlink" title="证书"></a>证书</h2><blockquote>
+<p>为了解决有人攻击发送的公钥，证书可以保证公钥一定是这个人的</p>
+</blockquote>
+<p><strong>公钥证书（PKC）</strong></p>
+<ul>
+<li>里面有姓名、邮箱等个人信息，<strong>以及此人的公钥</strong></li>
+<li>由<strong>认证机构（CA）</strong>施加数字签名（使用私钥进行数字签名，所以无法伪造）</li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/20210327113251413.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p>过程：</p>
+<ul>
+<li>接受者生成密钥对</li>
+<li>接受者在CA注册自己的公钥，CA用自己的私钥对这个公钥施加数字签名并生成证书（生成证书）</li>
+<li>消息的发送者使用CA的公钥进行验证数字签名，确认接受者发来的公钥是正确的（验证证书）</li>
+<li>开始非对称加密</li>
+</ul>
+<h3 id="注册和下载"><a href="#注册和下载" class="headerlink" title="注册和下载"></a>注册和下载</h3><img src="https://img-blog.csdnimg.cn/20210327113238209.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:53%;" />
+
+<p>各大CA的公钥，默认被内置在浏览器和操作系统中，不需要考虑CA公钥的合法性</p>
+<h1 id="应用层（四）"><a href="#应用层（四）" class="headerlink" title="应用层（四）"></a>应用层（四）</h1><h2 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h2><p>1、<strong>超文本传输安全协议</strong></p>
+<p>2、常称为：HTTP over TLS、HTTP over SSL、HTTP Secure</p>
+<p>3、现在在浏览器输入<code>http://www.baidu.com</code>会自动重定向到<code>https://www.baidu.com</code></p>
+<img src="https://img-blog.csdnimg.cn/2021032713073160.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:67%;" />
+
+<h3 id="SSL-x2F-TLS"><a href="#SSL-x2F-TLS" class="headerlink" title="SSL&#x2F;TLS"></a>SSL&#x2F;TLS</h3><p><strong>HTTPS是在HTTP基础上使用SSL&#x2F;TLS来加密报文，对窃听和中间人攻击提供合理的防护</strong></p>
+<img src="https://img-blog.csdnimg.cn/20210327131115875.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:50%;" />
+
+<p>SSL&#x2F;TLS也可以使用到其他协议上，比如：</p>
+<ul>
+<li>FTP-&gt;FTPS</li>
+<li>SMTP-&gt;SMTPS</li>
+</ul>
+<p><strong>1、TLS（Transport Layer Security）：传输层安全协议</strong></p>
+<ul>
+<li>前身是SSL（Secure Socket Layers）：安全套接层</li>
+</ul>
+<p>2、历史版本</p>
+<ul>
+<li>SSL 1.0</li>
+<li>SSL 2.0</li>
+<li>SSL 1.3（2018年）</li>
+</ul>
+<blockquote>
+<p>SSL&#x2F;TLS工作在哪一层？</p>
+</blockquote>
+<p>在应用层和传输层之间</p>
+<h3 id="OpenSSL"><a href="#OpenSSL" class="headerlink" title="OpenSSL"></a>OpenSSL</h3><p><strong>是SSL&#x2F;TLS协议的开源实现</strong></p>
+<p>Linux、MAC自带OpenSSL</p>
+<p>常用指令：</p>
+<ul>
+<li>生成私钥：openssl genres -out mj.key</li>
+<li>生成公钥：openssl rsa -in mj.key -pubout</li>
+</ul>
+<h3 id="HTTPS的成本"><a href="#HTTPS的成本" class="headerlink" title="HTTPS的成本"></a>HTTPS的成本</h3><p>1、证书的费用</p>
+<p>2、加解密计算</p>
+<p>3、降低访问速度</p>
+<p>有些企业的做法：包含敏感数据的请求才使用HTTPS，其他保持使用HTTP</p>
+<h3 id="HTTPS通信过程"><a href="#HTTPS通信过程" class="headerlink" title="HTTPS通信过程"></a>HTTPS通信过程</h3><p>三大阶段：</p>
+<ul>
+<li>TCP的三次握手</li>
+<li>TLS的连接</li>
+<li>HTTP的请求和响应</li>
+</ul>
+<h3 id="TLS-1-2的连接"><a href="#TLS-1-2的连接" class="headerlink" title="TLS 1.2的连接"></a>TLS 1.2的连接</h3><p>大概10个步骤</p>
+<h4 id="1、Client-Hello"><a href="#1、Client-Hello" class="headerlink" title="1、Client Hello"></a><strong>1、Client Hello</strong></h4><p>客户端发给服务器</p>
+<ul>
+<li>TLS版本号</li>
+<li>支持的加密组件列表（使用的加密算法及密钥长度等）</li>
+<li>一个随机数</li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/20210415224744539.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:60%;" />
+
+<h4 id="2、Server-Hello"><a href="#2、Server-Hello" class="headerlink" title="2、Server Hello"></a>2、Server Hello</h4><p>服务器发给客户端</p>
+<ul>
+<li>TLS版本</li>
+<li>选择的加密组件（从第一步的组件列表挑选出来的）</li>
+<li>一个随机数</li>
+</ul>
+<h4 id="3、certificate"><a href="#3、certificate" class="headerlink" title="3、certificate"></a>3、certificate</h4><p>服务器发给客户端</p>
+<ul>
+<li>服务器的公钥证书（被CA签名过）</li>
+</ul>
+<h4 id="4、server-key-exchange"><a href="#4、server-key-exchange" class="headerlink" title="4、server key exchange"></a>4、server key exchange</h4><p>服务器发给客户端</p>
+<ul>
+<li>用以实现DCDHE算法的其中一个参数（server Params）<ul>
+<li>DCDHE是一种密钥交换算法</li>
+<li>为了防止伪造，server Params经过私钥签名</li>
+</ul>
+</li>
+</ul>
+<h4 id="5、Server-Hello-Done"><a href="#5、Server-Hello-Done" class="headerlink" title="5、Server Hello Done"></a>5、Server Hello Done</h4><p>服务器发给客户端</p>
+<ul>
+<li>告诉客户端：协商结束</li>
+</ul>
+<p><strong>目前为止，客户端和服务器之间通过明文共享了：</strong></p>
+<ul>
+<li>客户端：TLS版本、加密组件列表、<strong>随机数（Clinet Random）</strong></li>
+<li>服务器：TLS版本、选择的加密组件、<strong>随机数（Server Random）</strong>、公钥证书、<strong>实现密钥交换算法的参数（Server Params）</strong></li>
+</ul>
+<h4 id="6、Client-Key-Exchange"><a href="#6、Client-Key-Exchange" class="headerlink" title="6、Client Key Exchange"></a>6、Client Key Exchange</h4><p>客户端发给服务器</p>
+<ul>
+<li>用以实现DCDHE算法的其中一个参数（client Params）</li>
+</ul>
+<p><strong>目前为止，客户端和服务器都拥有了ECDHE算法需要的2个参数：Server Params、client Params</strong></p>
+<p>客户端、服务器都可以使用ECDHE算法</p>
+<ul>
+<li>根据Server Params、client Params计算新的<strong>随机密钥串：Pre-master secret</strong></li>
+<li><strong>然后结合Clinet Random、Server Random、Pre-master secret生成用来加密会话的会话密钥</strong></li>
+</ul>
+<h4 id="7、change-cipher-spec"><a href="#7、change-cipher-spec" class="headerlink" title="7、change cipher spec"></a>7、change cipher spec</h4><p>客户端发给服务器</p>
+<ul>
+<li>告知服务器：之后的通信会采用会话密钥进行加密</li>
+</ul>
+<h4 id="8、Finished"><a href="#8、Finished" class="headerlink" title="8、Finished"></a>8、Finished</h4><p>客户端发给服务器</p>
+<ul>
+<li>包含连接至今全部报文的<strong>整体校验值</strong>（摘要值），加密之后发送给服务器</li>
+</ul>
+<p>这次握手协商是否成功，以服务器是否能够正确解密改报文为判定标准</p>
+<h4 id="9、Change-Cipher-spec"><a href="#9、Change-Cipher-spec" class="headerlink" title="9、Change Cipher spec"></a>9、Change Cipher spec</h4><p>服务器发给客户端</p>
+<h4 id="10、Finished"><a href="#10、Finished" class="headerlink" title="10、Finished"></a>10、Finished</h4><p>服务器发给客户端</p>
+<ul>
+<li>到此为止，客户端服务器验证加密解密没问题，握手正式结束</li>
+</ul>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><img src="https://img-blog.csdnimg.cn/20210415231618520.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ1NjUwODk5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom: 60%;" />
+
+<p>1、客户端给服务器</p>
+<ul>
+<li>TLS版本</li>
+<li>支持的加密套件列表</li>
+<li>随机数（Clinet Random）</li>
+</ul>
+<p>2、服务器给客户端</p>
+<ul>
+<li>TLS版本+选中的加密套件+随机数（Server Random）</li>
+<li>公钥证书</li>
+<li>密钥交换算法的参数（Server Params）</li>
+<li>协商结束</li>
+</ul>
+<p>3、客户端给服务器</p>
+<ul>
+<li>验证证书是否有问题</li>
+<li>client key exchange：密钥交换算法的参数（ClientParams），利用Server Params和Client Params生成随机数Pre-master secret，<strong>三个随机数生成会话密钥</strong></li>
+<li>change Cipher Spec ：告诉服务器我要使用会话密钥加密了</li>
+<li>finished：发送一个加密的摘要值</li>
+</ul>
+<p>4、服务器给客户端</p>
+<ul>
+<li>告诉服务器加密解密成功</li>
+</ul>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2022/01/23/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" title="计算机网络" target="_blank" rel="external">http://example.com/2022/01/23/计算机网络/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/SkyeHao" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/SkyeHao" target="_blank"><span class="text-dark">Skye</span><small class="ml-1x">大四就业狗 &amp; 后端开发</small></a></h3>
+        <div>随遇而安</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2022/01/25/%E7%AE%97%E6%B3%95/" title="算法"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2022/01/20/Linux/" title="Linux"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/SkyeHao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/u/6577680227" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.zhihu.com/" target="_blank" title="Zhihu" data-toggle=tooltip data-placement=top><i class="icon icon-zhihu"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: 'WCThBnVGMoO5c0FY3bTLPWlR-gzGzoHsz',
+    appKey: '7tkgDdkHASKAOrvon3LpBgxx',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>
