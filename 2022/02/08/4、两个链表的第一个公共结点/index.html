@@ -17,23 +17,25 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>从尾到头打印链表 | Skye-Blog</title>
-  <meta name="description" content="问题描述  我的代码1234567891011121314151617181920212223242526&#x2F;***    public class ListNode &amp;#123;*        int val;*        ListNode next &#x3D; null;**        ListNode(int val) &amp;#123;*            this.val &#x3D; val;*">
+  <title>两个链表的第一个公共结点 | Skye-Blog</title>
+  <meta name="description" content="问题描述  我的代码123456789101112131415161718192021222324&#x2F;*public class ListNode &amp;#123;    int val;    ListNode next &#x3D; null;    ListNode(int val) &amp;#123;        this.val &#x3D; val;    &amp;#125;&amp;#125;*&#x2F;public class So">
 <meta property="og:type" content="article">
-<meta property="og:title" content="从尾到头打印链表">
-<meta property="og:url" content="http://example.com/2022/02/04/%E4%BB%8E%E5%B0%BE%E5%88%B0%E5%A4%B4%E6%89%93%E5%8D%B0%E9%93%BE%E8%A1%A8/index.html">
+<meta property="og:title" content="两个链表的第一个公共结点">
+<meta property="og:url" content="http://example.com/2022/02/08/4%E3%80%81%E4%B8%A4%E4%B8%AA%E9%93%BE%E8%A1%A8%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%85%AC%E5%85%B1%E7%BB%93%E7%82%B9/index.html">
 <meta property="og:site_name" content="Skye的博客">
-<meta property="og:description" content="问题描述  我的代码1234567891011121314151617181920212223242526&#x2F;***    public class ListNode &amp;#123;*        int val;*        ListNode next &#x3D; null;**        ListNode(int val) &amp;#123;*            this.val &#x3D; val;*">
+<meta property="og:description" content="问题描述  我的代码123456789101112131415161718192021222324&#x2F;*public class ListNode &amp;#123;    int val;    ListNode next &#x3D; null;    ListNode(int val) &amp;#123;        this.val &#x3D; val;    &amp;#125;&amp;#125;*&#x2F;public class So">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220109120347589.png">
-<meta property="article:published_time" content="2022-02-04T15:25:35.000Z">
-<meta property="article:modified_time" content="2022-02-07T13:25:28.041Z">
+<meta property="og:image" content="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220208170614750.png">
+<meta property="og:image" content="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220208170621966.png">
+<meta property="og:image" content="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/b9aa24b46146b493b18782d97be378a6.png">
+<meta property="article:published_time" content="2022-02-08T09:05:02.000Z">
+<meta property="article:modified_time" content="2022-02-08T10:17:11.716Z">
 <meta property="article:author" content="Skye">
 <meta property="article:tag" content="计算机">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220109120347589.png">
+<meta name="twitter:image" content="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220208170614750.png">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://example.com/2022/02/04/%E4%BB%8E%E5%B0%BE%E5%88%B0%E5%A4%B4%E6%89%93%E5%8D%B0%E9%93%BE%E8%A1%A8/index.html">
+  <link rel="canonical" href="http://example.com/2022/02/08/4%E3%80%81%E4%B8%A4%E4%B8%AA%E9%93%BE%E8%A1%A8%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%85%AC%E5%85%B1%E7%BB%93%E7%82%B9/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Skye的博客" type="application/atom+xml">
   
@@ -209,7 +211,7 @@
   <div class="widget">
     <h3 class="widget-title">分类</h3>
     <div class="widget-body">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">16</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/%E5%89%91%E6%8C%87offer/">剑指offer</a><span class="category-list-count">3</span></li></ul></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">16</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/%E5%89%91%E6%8C%87offer/">剑指offer</a><span class="category-list-count">8</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/%E5%89%91%E6%8C%87offer/%E6%A0%88%E5%92%8C%E9%98%9F%E5%88%97/">栈和队列</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/%E5%89%91%E6%8C%87offer/%E9%93%BE%E8%A1%A8/">链表</a><span class="category-list-count">7</span></li></ul></li></ul></li></ul>
     </div>
   </div>
 
@@ -219,7 +221,7 @@
   <div class="widget">
     <h3 class="widget-title">标签</h3>
     <div class="widget-body">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">23</span></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">28</span></li></ul>
     </div>
   </div>
 
@@ -238,7 +240,7 @@
   <div class="widget">
     <h3 class="widget-title">归档</h3>
     <div class="widget-body">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a><span class="archive-list-count">16</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a><span class="archive-list-count">16</span></li></ul>
     </div>
   </div>
 
@@ -254,6 +256,66 @@
             
             <div class="item-inner">
               <p class="item-category">
+                <a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><i class="icon icon-angle-right"></i><a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/%E5%89%91%E6%8C%87offer/">剑指offer</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/02/08/7%E3%80%81%E5%A4%8D%E6%9D%82%E9%93%BE%E8%A1%A8%E7%9A%84%E5%A4%8D%E5%88%B6/" class="title">复杂链表的复制</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-02-08T11:11:54.000Z" itemprop="datePublished">2022-02-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><i class="icon icon-angle-right"></i><a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/%E5%89%91%E6%8C%87offer/">剑指offer</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/02/08/4%E3%80%81%E4%B8%A4%E4%B8%AA%E9%93%BE%E8%A1%A8%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%85%AC%E5%85%B1%E7%BB%93%E7%82%B9/" class="title">两个链表的第一个公共结点</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-02-08T09:05:02.000Z" itemprop="datePublished">2022-02-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><i class="icon icon-angle-right"></i><a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/%E5%89%91%E6%8C%87offer/">剑指offer</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/02/08/5%E3%80%81%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%8E%AF%E7%9A%84%E5%85%A5%E5%8F%A3%E7%BB%93%E7%82%B9/" class="title">链表中环的入口结点</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-02-08T09:05:02.000Z" itemprop="datePublished">2022-02-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><i class="icon icon-angle-right"></i><a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/%E5%89%91%E6%8C%87offer/">剑指offer</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/02/08/6%E3%80%81%E9%93%BE%E8%A1%A8%E4%B8%AD%E5%80%92%E6%95%B0%E6%9C%80%E5%90%8Ek%E4%B8%AA%E7%BB%93%E7%82%B9/" class="title">链表中倒数最后k个结点</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-02-08T08:28:07.000Z" itemprop="datePublished">2022-02-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
                 <a class="category-link" href="/categories/Java/">Java</a>
               </p>
               <p class="item-title">
@@ -261,66 +323,6 @@
               </p>
               <p class="item-date">
                 <time datetime="2022-02-07T12:56:19.000Z" itemprop="datePublished">2022-02-07</time>
-              </p>
-            </div>
-          </li>
-          
-          <li>
-            
-            <div class="item-inner">
-              <p class="item-category">
-                <a class="category-link" href="/categories/Java/">Java</a>
-              </p>
-              <p class="item-title">
-                <a href="/2022/02/07/Zookeeper/" class="title">Zookeeper</a>
-              </p>
-              <p class="item-date">
-                <time datetime="2022-02-07T08:48:31.000Z" itemprop="datePublished">2022-02-07</time>
-              </p>
-            </div>
-          </li>
-          
-          <li>
-            
-            <div class="item-inner">
-              <p class="item-category">
-                <a class="category-link" href="/categories/Java/">Java</a>
-              </p>
-              <p class="item-title">
-                <a href="/2022/02/07/kafka/" class="title">Kafka</a>
-              </p>
-              <p class="item-date">
-                <time datetime="2022-02-07T08:48:31.000Z" itemprop="datePublished">2022-02-07</time>
-              </p>
-            </div>
-          </li>
-          
-          <li>
-            
-            <div class="item-inner">
-              <p class="item-category">
-                <a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><i class="icon icon-angle-right"></i><a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/%E5%89%91%E6%8C%87offer/">剑指offer</a>
-              </p>
-              <p class="item-title">
-                <a href="/2022/02/04/%E4%BB%8E%E5%B0%BE%E5%88%B0%E5%A4%B4%E6%89%93%E5%8D%B0%E9%93%BE%E8%A1%A8/" class="title">从尾到头打印链表</a>
-              </p>
-              <p class="item-date">
-                <time datetime="2022-02-04T15:25:35.000Z" itemprop="datePublished">2022-02-04</time>
-              </p>
-            </div>
-          </li>
-          
-          <li>
-            
-            <div class="item-inner">
-              <p class="item-category">
-                <a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><i class="icon icon-angle-right"></i><a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/%E5%89%91%E6%8C%87offer/">剑指offer</a>
-              </p>
-              <p class="item-title">
-                <a href="/2022/02/04/%E5%90%88%E5%B9%B6%E4%B8%A4%E4%B8%AA%E6%8E%92%E5%BA%8F%E7%9A%84%E9%93%BE%E8%A1%A8/" class="title">合并两个排序的链表</a>
-              </p>
-              <p class="item-date">
-                <time datetime="2022-02-04T12:18:24.000Z" itemprop="datePublished">2022-02-04</time>
               </p>
             </div>
           </li>
@@ -340,21 +342,21 @@
   <div class="slimContent">
     <nav id="toc" class="article-toc">
       <h3 class="toc-title">文章目录</h3>
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%91%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="toc-number">2.</span> <span class="toc-text">我的代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E9%97%AE%E9%A2%98"><span class="toc-number">3.</span> <span class="toc-text">主要问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="toc-number">4.</span> <span class="toc-text">解决办法</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="toc-number">2.</span> <span class="toc-text">我的代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E9%97%AE%E9%A2%98"><span class="toc-number">3.</span> <span class="toc-text">主要问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="toc-number">4.</span> <span class="toc-text">解决办法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%95%BF%E5%BA%A6%E5%B7%AE%E6%B3%95"><span class="toc-number">4.1.</span> <span class="toc-text">长度差法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90"><span class="toc-number">4.1.1.</span> <span class="toc-text">复杂度分析</span></a></li></ol></li></ol></li></ol>
     </nav>
   </div>
 </aside>
 
 <main class="main" role="main">
   <div class="content">
-  <article id="post-从尾到头打印链表" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <article id="post-4、两个链表的第一个公共结点" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
       
         
   
     <h1 class="article-title" itemprop="name">
-      从尾到头打印链表
+      两个链表的第一个公共结点
     </h1>
   
 
@@ -362,14 +364,14 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/2022/02/04/%E4%BB%8E%E5%B0%BE%E5%88%B0%E5%A4%B4%E6%89%93%E5%8D%B0%E9%93%BE%E8%A1%A8/" class="article-date">
-	  <time datetime="2022-02-04T15:25:35.000Z" itemprop="datePublished">2022-02-04</time>
+	<a href="/2022/02/08/4%E3%80%81%E4%B8%A4%E4%B8%AA%E9%93%BE%E8%A1%A8%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%85%AC%E5%85%B1%E7%BB%93%E7%82%B9/" class="article-date">
+	  <time datetime="2022-02-08T09:05:02.000Z" itemprop="datePublished">2022-02-08</time>
 	</a>
 </span>
         
   <span class="article-category">
     <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a>►<a class="article-category-link" href="/categories/%E7%AE%97%E6%B3%95/%E5%89%91%E6%8C%87offer/">剑指offer</a>
+    <a class="article-category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a>►<a class="article-category-link" href="/categories/%E7%AE%97%E6%B3%95/%E5%89%91%E6%8C%87offer/">剑指offer</a>►<a class="article-category-link" href="/categories/%E7%AE%97%E6%B3%95/%E5%89%91%E6%8C%87offer/%E9%93%BE%E8%A1%A8/">链表</a>
   </span>
 
         
@@ -381,38 +383,36 @@
 
         
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/02/04/%E4%BB%8E%E5%B0%BE%E5%88%B0%E5%A4%B4%E6%89%93%E5%8D%B0%E9%93%BE%E8%A1%A8/#comments" class="article-comment-link">评论</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/02/08/4%E3%80%81%E4%B8%A4%E4%B8%AA%E9%93%BE%E8%A1%A8%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%85%AC%E5%85%B1%E7%BB%93%E7%82%B9/#comments" class="article-comment-link">评论</a></span>
         
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220109120347589.png" alt="image-20220109120347589"  />
+        <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220208170614750.png" alt="image-20220208170614750"></p>
+<p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220208170621966.png" alt="image-20220208170621966"></p>
+<h2 id="我的代码"><a href="#我的代码" class="headerlink" title="我的代码"></a>我的代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">public class ListNode &#123;</span></span><br><span class="line"><span class="comment">    int val;</span></span><br><span class="line"><span class="comment">    ListNode next = null;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    ListNode(int val) &#123;</span></span><br><span class="line"><span class="comment">        this.val = val;</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment">&#125;*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ListNode <span class="title">FindFirstCommonNode</span><span class="params">(ListNode pHead1, ListNode pHead2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span>(pHead1!=<span class="keyword">null</span>)&#123;</span><br><span class="line">            ListNode node = pHead2; </span><br><span class="line">             <span class="keyword">while</span>(node!=<span class="keyword">null</span>)&#123;</span><br><span class="line">                 <span class="keyword">if</span>(pHead1 == node)&#123;</span><br><span class="line">                     <span class="keyword">return</span> node;</span><br><span class="line">                 &#125;</span><br><span class="line">                 node = node.next;</span><br><span class="line">             &#125;</span><br><span class="line">            pHead1 = pHead1.next;</span><br><span class="line">         &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="我的代码"><a href="#我的代码" class="headerlink" title="我的代码"></a>我的代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">*    public class ListNode &#123;</span></span><br><span class="line"><span class="comment">*        int val;</span></span><br><span class="line"><span class="comment">*        ListNode next = null;</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">*        ListNode(int val) &#123;</span></span><br><span class="line"><span class="comment">*            this.val = val;</span></span><br><span class="line"><span class="comment">*        &#125;</span></span><br><span class="line"><span class="comment">*    &#125;</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ArrayList&lt;Integer&gt; <span class="title">printListFromTailToHead</span><span class="params">(ListNode listNode)</span> </span>&#123;</span><br><span class="line">        ArrayList&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList();</span><br><span class="line">        <span class="keyword">while</span>(listNode!=<span class="keyword">null</span>)&#123;</span><br><span class="line">            list.add(listNode.val);</span><br><span class="line">            listNode = listNode.next;</span><br><span class="line">        &#125;</span><br><span class="line">        ArrayList&lt;Integer&gt; l = <span class="keyword">new</span> ArrayList();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=list.size()-<span class="number">1</span>;i&gt;=<span class="number">0</span>;--i)&#123;</span><br><span class="line">            l.add(list.get(i));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> l;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
-
-<h3 id="主要问题"><a href="#主要问题" class="headerlink" title="主要问题"></a>主要问题</h3><ul>
-<li>&#x3D;&#x3D;在ArrayList插入数据时，只会进行正向插入，导致需要多进行一次循环将集合倒序。&#x3D;&#x3D;</li>
-</ul>
-<h3 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h3><ol>
-<li>非递归方法，循环遍历链表时将数据倒序插入集合之中。<ul>
-<li><strong>&#x3D;&#x3D;ArrayList 中有个方法是 add(index,value)，可以指定 index 位置插入 value 值。&#x3D;&#x3D;</strong><br>所以我们在遍历 listNode 的同时将每个遇到的值插入到 list 的 0 位置，最后输出 listNode 即可得到逆序链表。</li>
-</ul>
+<h2 id="主要问题"><a href="#主要问题" class="headerlink" title="主要问题"></a>主要问题</h2><ul>
+<li><p>双层循环遍历的暴力解法，及其低级，不够优美。</p>
 </li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ArrayList&lt;Integer&gt; <span class="title">printListFromTailToHead</span><span class="params">(ListNode listNode)</span> </span>&#123;</span><br><span class="line">        ArrayList&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        ListNode tmp = listNode;</span><br><span class="line">        <span class="keyword">while</span>(tmp!=<span class="keyword">null</span>)&#123;</span><br><span class="line">            list.add(<span class="number">0</span>,tmp.val);</span><br><span class="line">            tmp = tmp.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> list;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<li><p>未考虑链表为空的情况。</p>
+</li>
+</ul>
+<h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><h3 id="长度差法"><a href="#长度差法" class="headerlink" title="长度差法"></a>长度差法</h3><p>若两链表存在公共结点，则从公共结点开始，到链表尾部的所有结点都相同。则可视为两个链表&#x3D;&#x3D;尾对齐&#x3D;&#x3D;。</p>
+<p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/b9aa24b46146b493b18782d97be378a6.png" alt="b9aa24b46146b493b18782d97be378a6"></p>
+<p>&#x3D;&#x3D;由于两链表尾对齐，链表的长度差就与公共结点前的链表的长度差一致。&#x3D;&#x3D;</p>
+<p>故可先计算出长度差，将两链表同步到同一起点时再进行齐头并进的比较。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ListNode <span class="title">FindFirstCommonNode</span><span class="params">(ListNode a, ListNode b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> c1 = <span class="number">0</span>, c2 = <span class="number">0</span>;</span><br><span class="line">        ListNode ta = a, tb = b;</span><br><span class="line">        <span class="comment">//计算两链表长度</span></span><br><span class="line">        <span class="keyword">while</span> (ta != <span class="keyword">null</span> &amp;&amp; c1++ &gt;= <span class="number">0</span>) ta = ta.next;</span><br><span class="line">        <span class="keyword">while</span> (tb != <span class="keyword">null</span> &amp;&amp; c2++ &gt;= <span class="number">0</span>) tb = tb.next;</span><br><span class="line">        <span class="comment">//长度差</span></span><br><span class="line">        <span class="keyword">int</span> d = c1 - c2;</span><br><span class="line">        <span class="keyword">if</span> (d &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">while</span> (d-- &gt; <span class="number">0</span>) a = a.next;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (d &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            d = -d;</span><br><span class="line">            <span class="keyword">while</span> (d-- &gt; <span class="number">0</span>) b = b.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (a != b) &#123;</span><br><span class="line">            a = a.next;</span><br><span class="line">            b = b.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>​    时间复杂度：O(n)</p>
-<p>​    空间复杂度：O(n)</p>
-<ol start="2">
-<li>递归方法，由于最终要求**&#x3D;&#x3D;先进后出，想到利用栈&#x3D;&#x3D;**。利用递归方法，用系统的栈帮忙打印。</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    ArrayList&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList();</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ArrayList&lt;Integer&gt; <span class="title">printListFromTailToHead</span><span class="params">(ListNode listNode)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(listNode!=<span class="keyword">null</span>)&#123;</span><br><span class="line">            printListFromTailToHead(listNode.next);</span><br><span class="line">            list.add(listNode.val);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> list;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>​    时间复杂度：O(n)</p>
-<p>​    空间复杂度：O(n)</p>
+<h4 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h4><ul>
+<li><p>时间复杂度：O(n + m)<em>O</em>(<em>n</em>+<em>m</em>)</p>
+</li>
+<li><p>空间复杂度：O(1)<em>O</em>(1)</p>
+</li>
+</ul>
 
       
     </div>
@@ -422,7 +422,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="http://example.com/2022/02/04/%E4%BB%8E%E5%B0%BE%E5%88%B0%E5%A4%B4%E6%89%93%E5%8D%B0%E9%93%BE%E8%A1%A8/" title="从尾到头打印链表" target="_blank" rel="external">http://example.com/2022/02/04/从尾到头打印链表/</a>
+      <a href="http://example.com/2022/02/08/4%E3%80%81%E4%B8%A4%E4%B8%AA%E9%93%BE%E8%A1%A8%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%85%AC%E5%85%B1%E7%BB%93%E7%82%B9/" title="两个链表的第一个公共结点" target="_blank" rel="external">http://example.com/2022/02/08/4、两个链表的第一个公共结点/</a>
     </li>
     
     <li class="post-copyright-license">
@@ -469,12 +469,12 @@
   <ul class="pager pull-left">
     
     <li class="prev">
-      <a href="/2022/02/07/kafka/" title="Kafka"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+      <a href="/2022/02/08/7%E3%80%81%E5%A4%8D%E6%9D%82%E9%93%BE%E8%A1%A8%E7%9A%84%E5%A4%8D%E5%88%B6/" title="复杂链表的复制"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
     </li>
     
     
     <li class="next">
-      <a href="/2022/02/04/%E5%90%88%E5%B9%B6%E4%B8%A4%E4%B8%AA%E6%8E%92%E5%BA%8F%E7%9A%84%E9%93%BE%E8%A1%A8/" title="合并两个排序的链表"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+      <a href="/2022/02/08/5%E3%80%81%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%8E%AF%E7%9A%84%E5%85%A5%E5%8F%A3%E7%BB%93%E7%82%B9/" title="链表中环的入口结点"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
     
