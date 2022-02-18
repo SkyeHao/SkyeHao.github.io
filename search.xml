@@ -4,6 +4,151 @@
   
     
     <entry>
+      <title>数字序列中某一位的数字</title>
+      <link href="/2022/02/18/19%E3%80%81%E6%95%B0%E5%AD%97%E5%BA%8F%E5%88%97%E4%B8%AD%E6%9F%90%E4%B8%80%E4%BD%8D%E7%9A%84%E6%95%B0%E5%AD%97/"/>
+      <url>/2022/02/18/19%E3%80%81%E6%95%B0%E5%AD%97%E5%BA%8F%E5%88%97%E4%B8%AD%E6%9F%90%E4%B8%80%E4%BD%8D%E7%9A%84%E6%95%B0%E5%AD%97/</url>
+      
+        <content type="html"><![CDATA[<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218221704180.png" alt="image-20220218221704180"></p><h2 id="主要问题"><a href="#主要问题" class="headerlink" title="主要问题"></a>主要问题</h2><ul><li>暴力解导致堆内存溢出</li></ul><h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><h3 id="找规律"><a href="#找规律" class="headerlink" title="找规律"></a>找规律</h3><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218221759062.png" alt="image-20220218221759062"></p><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218221810843.png" alt="image-20220218221810843"></p><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218221823011.png" alt="image-20220218221823011"></p><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218221832998.png" alt="image-20220218221832998"></p><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218221841512.png" alt="image-20220218221841512"></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findNthDigit</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span>(n==<span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">       <span class="comment">//由于是n=0时对应开始的0，这里不需要进行减操作n--;，但是如果n=1对应开始的0则需要减操作</span></span><br><span class="line">       <span class="comment">//排除n=0后，后面n从1开始。</span></span><br><span class="line">       <span class="keyword">int</span> digit = <span class="number">1</span>;</span><br><span class="line">       <span class="keyword">int</span> start = <span class="number">1</span>;</span><br><span class="line">       <span class="keyword">long</span> count = <span class="number">9</span>; <span class="comment">//count的值有可能会超出int的范围，所以变量类型取为long</span></span><br><span class="line">       <span class="keyword">while</span>(n&gt;count)&#123;<span class="comment">//不能带=号，此时n从1开始，n=count时，属于上一个循环的最后一个数字</span></span><br><span class="line">           n=(<span class="keyword">int</span>)(n-count);<span class="comment">//这里(int)不能省略</span></span><br><span class="line">           digit++;</span><br><span class="line">           start = start*<span class="number">10</span>;</span><br><span class="line">           count = (<span class="keyword">long</span>)start*<span class="number">9</span>*digit;</span><br><span class="line">           <span class="comment">//这里的long不能省略，否则，会先按照int类型进行计算，然后赋值给long型的count，超过int大小限制时，会出现负数</span></span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">int</span> num = start + (n-<span class="number">1</span>)/digit;</span><br><span class="line">       <span class="keyword">int</span> index = (n-<span class="number">1</span>)%digit;<span class="comment">//index最大取digit-1,即此时num坐标从左到右为0,1,...,digit-1,共digit位</span></span><br><span class="line">       <span class="keyword">while</span>(index&lt;(digit-<span class="number">1</span>))&#123;</span><br><span class="line">       <span class="comment">//最后的结果是num中的第index个数字，index从左到右从0开始递增，考虑到踢出右侧末尾的数字比较简单，我们从右侧开始依次踢出数字</span></span><br><span class="line">           num = num/<span class="number">10</span>;</span><br><span class="line">           digit--;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> num%<span class="number">10</span>;<span class="comment">//此时num的右侧末尾数字即为结果</span></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure><h4 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h4><ul><li>时间复杂度：O(logn)</li><li>空间复杂度：O(logn)</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 算法 </category>
+          
+          <category> 剑指offer </category>
+          
+          <category> 搜索算法 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 计算机 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>字符串的排列</title>
+      <link href="/2022/02/18/18%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%8E%92%E5%88%97/"/>
+      <url>/2022/02/18/18%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%8E%92%E5%88%97/</url>
+      
+        <content type="html"><![CDATA[<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218213507879.png" alt="image-20220218213507879"></p><h2 id="主要问题"><a href="#主要问题" class="headerlink" title="主要问题"></a>主要问题</h2><ul><li>对于拥有重复字符的字符串，在递归调用时不能只是简单的判断是否含有相同字符，否则会出错。</li></ul><h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><h3 id="回溯算法"><a href="#回溯算法" class="headerlink" title="回溯算法"></a>回溯算法</h3><p>在递归调用时，不是每次都要传入当前字符串，而是将 <code>char[]</code> 数组设为成员变量，通过交换 <code>char[]</code> 数组中元素的位置来起到连接不同字符的作用，在最终跳出递归时将数组转为字符串加入集合即可。</p><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218213917263.png" alt="image-20220218213917263"></p><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218213853060.png" alt="image-20220218213853060"></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    List&lt;String&gt; res = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    <span class="keyword">char</span>[] c;</span><br><span class="line">    <span class="keyword">public</span> String[] permutation(String s) &#123;</span><br><span class="line">        c = s.toCharArray();</span><br><span class="line">        dfs(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">return</span> res.toArray(<span class="keyword">new</span> String[res.size()]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x == c.length - <span class="number">1</span>) &#123;</span><br><span class="line">            res.add(String.valueOf(c));      <span class="comment">// 添加排列方案</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        HashSet&lt;Character&gt; set = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = x; i &lt; c.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span>(set.contains(c[i])) <span class="keyword">continue</span>; <span class="comment">// 重复，因此剪枝</span></span><br><span class="line">            set.add(c[i]);</span><br><span class="line">            swap(i, x);                      <span class="comment">// 交换，将 c[i] 固定在第 x 位</span></span><br><span class="line">            dfs(x + <span class="number">1</span>);                      <span class="comment">// 开启固定第 x + 1 位字符</span></span><br><span class="line">            swap(i, x);                      <span class="comment">// 恢复交换</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span> tmp = c[a];</span><br><span class="line">        c[a] = c[b];</span><br><span class="line">        c[b] = tmp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h4 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h4><ul><li>时间复杂度：O(n!n)</li><li>空间复杂度：O(n^2)</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 算法 </category>
+          
+          <category> 剑指offer </category>
+          
+          <category> 回溯算法 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 计算机 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>旋转数组的最小数字</title>
+      <link href="/2022/02/18/16%E3%80%81%E6%97%8B%E8%BD%AC%E6%95%B0%E7%BB%84%E7%9A%84%E6%9C%80%E5%B0%8F%E6%95%B0%E5%AD%97/"/>
+      <url>/2022/02/18/16%E3%80%81%E6%97%8B%E8%BD%AC%E6%95%B0%E7%BB%84%E7%9A%84%E6%9C%80%E5%B0%8F%E6%95%B0%E5%AD%97/</url>
+      
+        <content type="html"><![CDATA[<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218203452148.png" alt="image-20220218203452148"></p><h2 id="主要问题"><a href="#主要问题" class="headerlink" title="主要问题"></a>主要问题</h2><ul><li>使用二分法时，对于 <code>arr[mid]</code> 和谁比较产生疑问</li></ul><h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><h3 id="二分法"><a href="#二分法" class="headerlink" title="二分法"></a>二分法</h3><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218204537267.png" alt="image-20220218204537267"></p><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218204625365.png" alt="image-20220218204625365"></p><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218204936383.png" alt="image-20220218204936383"></p><ul><li>对于 <code>num[m] = num[j]</code> 的情况而言，因为题目只要求找到最小值而不要求旋转节点索引值，所以在有相等的值的时候，进行 <code>j = j -1</code> 并不会导致最小值丢失。</li></ul><p>实际上，当出现 <code>nums[m] = nums[j]</code> 时，一定有区间 <code>[i,m]</code> 内所有元素相等 或 区间 <code>[m,j]</code> 内所有元素相等（或两者皆满足）。对于寻找此类数组的最小值问题，可直接放弃二分查找，而使用线性查找替代。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minArray</span><span class="params">(<span class="keyword">int</span>[] numbers)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>, j = numbers.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; j) &#123;</span><br><span class="line">            <span class="keyword">int</span> m = (i + j) / <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">if</span> (numbers[m] &gt; numbers[j]) i = m + <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (numbers[m] &lt; numbers[j]) j = m;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">int</span> x = i;</span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> k = i + <span class="number">1</span>; k &lt; j; k++) &#123;</span><br><span class="line">                    <span class="keyword">if</span>(numbers[k] &lt; numbers[x]) x = k;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> numbers[x];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> numbers[i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h4 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h4><ul><li><p>时间复杂度：O(logN)</p></li><li><p>空间复杂度：O(1)</p></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 算法 </category>
+          
+          <category> 剑指offer </category>
+          
+          <category> 搜索算法 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 计算机 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>二维数组中查找</title>
+      <link href="/2022/02/18/15%E3%80%81%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE/"/>
+      <url>/2022/02/18/15%E3%80%81%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE/</url>
+      
+        <content type="html"><![CDATA[<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218183044164.png" alt="image-20220218183044164"></p><h2 id="我的代码"><a href="#我的代码" class="headerlink" title="我的代码"></a>我的代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">Find</span><span class="params">(<span class="keyword">int</span> target, <span class="keyword">int</span> [][] array)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(array.length == <span class="number">0</span> || array[<span class="number">0</span>].length == <span class="number">0</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">if</span>(target &lt; array[<span class="number">0</span>][<span class="number">0</span>] || target &gt; array[array.length-<span class="number">1</span>][array[<span class="number">0</span>].length-<span class="number">1</span>])&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> num = array[<span class="number">0</span>].length;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; array.length;i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>;j &lt; num;j++)&#123;</span><br><span class="line">                <span class="keyword">if</span>(array[i][j] == target) <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                <span class="keyword">else</span>&#123;</span><br><span class="line">                    <span class="keyword">if</span>(array[i][j] &gt; target)&#123;</span><br><span class="line">                        num = j;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="主要问题"><a href="#主要问题" class="headerlink" title="主要问题"></a>主要问题</h2><ul><li>难以达到O(n+m)的时间复杂度</li></ul><h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><h3 id="二分查找"><a href="#二分查找" class="headerlink" title="二分查找"></a>二分查找</h3><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218183550324.png" alt="image-20220218183550324"></p><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218183316946.png" alt="image-20220218183316946"></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">findNumberIn2DArray</span><span class="params">(<span class="keyword">int</span>[][] matrix, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = matrix.length - <span class="number">1</span>, j = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(i &gt;= <span class="number">0</span> &amp;&amp; j &lt; matrix[<span class="number">0</span>].length)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(matrix[i][j] &gt; target) i--;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(matrix[i][j] &lt; target) j++;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h4 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h4><ul><li>时间复杂度：O(n+m)</li><li>空间复杂度：O(1)</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 算法 </category>
+          
+          <category> 剑指offer </category>
+          
+          <category> 搜索算法 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 计算机 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>在排序数组中查找数字</title>
+      <link href="/2022/02/17/17%E3%80%81%E5%9C%A8%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE%E6%95%B0%E5%AD%97/"/>
+      <url>/2022/02/17/17%E3%80%81%E5%9C%A8%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE%E6%95%B0%E5%AD%97/</url>
+      
+        <content type="html"><![CDATA[<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218015337679.png" alt="image-20220218015337679"></p><h2 id="主要问题"><a href="#主要问题" class="headerlink" title="主要问题"></a>主要问题</h2><ul><li>对于二分查找的左右端点的数组下标不确定</li></ul><h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><h3 id="二分法"><a href="#二分法" class="headerlink" title="二分法"></a>二分法</h3><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218015838004.png" alt="image-20220218015838004"></p><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220218015812012.png" alt="image-20220218015812012"></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">search</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 搜索右边界 right</span></span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>, j = nums.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span>(i &lt;= j) &#123;</span><br><span class="line">            <span class="keyword">int</span> m = (i + j) / <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">if</span>(nums[m] &lt;= target) i = m + <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">else</span> j = m - <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> right = i;</span><br><span class="line">        <span class="comment">// 若数组中无 target ，则提前返回</span></span><br><span class="line">        <span class="keyword">if</span>(j &gt;= <span class="number">0</span> &amp;&amp; nums[j] != target) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// 搜索左边界 right</span></span><br><span class="line">        i = <span class="number">0</span>; j = nums.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span>(i &lt;= j) &#123;</span><br><span class="line">            <span class="keyword">int</span> m = (i + j) / <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">if</span>(nums[m] &lt; target) i = m + <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">else</span> j = m - <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> left = j;</span><br><span class="line">        <span class="keyword">return</span> right - left - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h4 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h4><ul><li><p>时间复杂度：O(logN)</p></li><li><p>空间复杂度：O(1)</p></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 算法 </category>
+          
+          <category> 剑指offer </category>
+          
+          <category> 搜索算法 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 计算机 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>数的子结构</title>
       <link href="/2022/02/15/14%E3%80%81%E6%A0%91%E7%9A%84%E5%AD%90%E7%BB%93%E6%9E%84/"/>
       <url>/2022/02/15/14%E3%80%81%E6%A0%91%E7%9A%84%E5%AD%90%E7%BB%93%E6%9E%84/</url>
