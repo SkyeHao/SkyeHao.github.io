@@ -4,6 +4,87 @@
   
     
     <entry>
+      <title>矩形覆盖</title>
+      <link href="/2022/02/26/27%E3%80%81%E7%9F%A9%E5%BD%A2%E8%A6%86%E7%9B%96/"/>
+      <url>/2022/02/26/27%E3%80%81%E7%9F%A9%E5%BD%A2%E8%A6%86%E7%9B%96/</url>
+      
+        <content type="html"><![CDATA[<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220226215238607.png" alt="image-20220226215238607" style="zoom: 80%;" /><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220226215302027.png" style="zoom:80%;" /><h2 id="我的问题"><a href="#我的问题" class="headerlink" title="我的问题"></a>我的问题</h2><ul><li>把问题想的过于简单，只是简单的进行了奇偶划分，没有注意到单纯指数运算求解会造成重复的情况。</li><li>对问题的认识不够深刻，没有发现这是斐波那契数列的变形。</li></ul><h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><h3 id="斐波那契数列"><a href="#斐波那契数列" class="headerlink" title="斐波那契数列"></a>斐波那契数列</h3><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220226215834213.png" alt="image-20220226215834213"></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rectCover</span><span class="params">(<span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(target == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span>(target == <span class="number">1</span>) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(target == <span class="number">2</span>) <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">return</span> rectCover(target-<span class="number">1</span>) + rectCover(target-<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 算法 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 剑指offer </tag>
+            
+            <tag> 动态规划 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>最长不含重复字符的子字符串</title>
+      <link href="/2022/02/26/26%E3%80%81%E6%9C%80%E9%95%BF%E4%B8%8D%E5%90%AB%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E5%AD%90%E5%AD%97%E7%AC%A6%E4%B8%B2/"/>
+      <url>/2022/02/26/26%E3%80%81%E6%9C%80%E9%95%BF%E4%B8%8D%E5%90%AB%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E5%AD%90%E5%AD%97%E7%AC%A6%E4%B8%B2/</url>
+      
+        <content type="html"><![CDATA[<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220226213026862.png" alt="image-20220226213026862"></p><h2 id="主要问题"><a href="#主要问题" class="headerlink" title="主要问题"></a>主要问题</h2><ul><li>在确定子字符串的时候，对于如何找到上一个与目标字符相同的字符的位置产生问题，使用子字符串判断则无法确定具体位置。</li></ul><h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><h3 id="动态规划-哈希表"><a href="#动态规划-哈希表" class="headerlink" title="动态规划+哈希表"></a>动态规划+哈希表</h3><p>不去记录字符串，而是找到上一个与目标字符相同的字符所在的索引，根据两字符之间的索引差值来判断目标字符是否重复。</p><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220226213522441.png" alt="image-20220226213522441"></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">lengthOfLongestSubstring</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        Map&lt;Character, Integer&gt; dic = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">int</span> res = <span class="number">0</span>, tmp = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; s.length(); j++) &#123;</span><br><span class="line">            <span class="keyword">int</span> i = dic.getOrDefault(s.charAt(j), -<span class="number">1</span>); <span class="comment">// 获取索引 i</span></span><br><span class="line">            dic.put(s.charAt(j), j); <span class="comment">// 更新哈希表</span></span><br><span class="line">            tmp = tmp &lt; j - i ? tmp + <span class="number">1</span> : j - i; <span class="comment">// dp[j - 1] -&gt; dp[j]</span></span><br><span class="line">            res = Math.max(res, tmp); <span class="comment">// max(dp[j - 1], dp[j])</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h4 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h4><ul><li>时间复杂度：O(n)</li><li>空间复杂度：O(1)</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 算法 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 剑指offer </tag>
+            
+            <tag> 动态规划 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>礼物的最大价值</title>
+      <link href="/2022/02/26/25%E3%80%81%E7%A4%BC%E7%89%A9%E7%9A%84%E6%9C%80%E5%A4%A7%E4%BB%B7%E5%80%BC/"/>
+      <url>/2022/02/26/25%E3%80%81%E7%A4%BC%E7%89%A9%E7%9A%84%E6%9C%80%E5%A4%A7%E4%BB%B7%E5%80%BC/</url>
+      
+        <content type="html"><![CDATA[<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p><img src="https://gitee.com/stitch618/StitchPicGo/raw/master/pic/image-20220226133419154.png" alt="image-20220226133419154"></p><h2 id="我的代码"><a href="#我的代码" class="headerlink" title="我的代码"></a>我的代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> grid int整型二维数组 </span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> int整型</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxValue</span> <span class="params">(<span class="keyword">int</span>[][] grid)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; grid.length;i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>;j &lt; grid[<span class="number">0</span>].length;j++)&#123;</span><br><span class="line">                <span class="keyword">if</span>(i == <span class="number">0</span> &amp;&amp; j == <span class="number">0</span>)&#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;<span class="keyword">else</span> <span class="keyword">if</span>(i == <span class="number">0</span>)&#123;</span><br><span class="line">                    grid[i][j] += grid[i][j-<span class="number">1</span>];</span><br><span class="line">                &#125;<span class="keyword">else</span> <span class="keyword">if</span>(j == <span class="number">0</span>)&#123;</span><br><span class="line">                    grid[i][j] += grid[i-<span class="number">1</span>][j];</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    grid[i][j] += Math.max(grid[i][j-<span class="number">1</span>],grid[i-<span class="number">1</span>][j]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> grid[grid.length-<span class="number">1</span>][grid[<span class="number">0</span>].length-<span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="解题思想"><a href="#解题思想" class="headerlink" title="解题思想"></a>解题思想</h2><ul><li>通过实现一个动态规划二维数组 <code>dp[][]</code> 从左到右从上到下循环遍历每一个数组元素，使其选择他上侧或左侧较大的那个元素与自身相加更新自身的值，实现动态规划。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 算法 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 剑指offer </tag>
+            
+            <tag> 动态规划 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>买卖股票的最好时机(Ⅰ)</title>
       <link href="/2022/02/20/24%E3%80%81%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E5%A5%BD%E6%97%B6%E6%9C%BA%EF%BC%88%E2%85%A0%EF%BC%89/"/>
       <url>/2022/02/20/24%E3%80%81%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E5%A5%BD%E6%97%B6%E6%9C%BA%EF%BC%88%E2%85%A0%EF%BC%89/</url>
