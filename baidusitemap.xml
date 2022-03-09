@@ -29,10 +29,6 @@
     <lastmod>2022-02-20</lastmod>
   </url>
   <url>
-    <loc>http://example.com/2022/01/10/Redis/</loc>
-    <lastmod>2022-02-19</lastmod>
-  </url>
-  <url>
     <loc>http://example.com/2022/01/08/mysql/</loc>
     <lastmod>2022-02-19</lastmod>
   </url>
@@ -190,14 +186,6 @@
   </url>
   <url>
     <loc>http://example.com/2022/01/23/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/</loc>
-    <lastmod>2022-02-19</lastmod>
-  </url>
-  <url>
-    <loc>http://example.com/2022/02/07/Zookeeper/</loc>
-    <lastmod>2022-02-19</lastmod>
-  </url>
-  <url>
-    <loc>http://example.com/2022/02/07/kafka/</loc>
     <lastmod>2022-02-19</lastmod>
   </url>
   <url>
